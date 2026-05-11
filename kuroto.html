@@ -1,0 +1,149 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <title>Verifly - kuroto認証</title>
+
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      font-family: Arial, sans-serif;
+    }
+
+    body {
+      background: #f6f7fb;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+    }
+
+    .box {
+      background: white;
+      padding: 40px;
+      border-radius: 16px;
+      width: 450px;
+      box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+      text-align: center;
+    }
+
+    h1 {
+      margin-bottom: 20px;
+      font-size: 26px;
+    }
+
+    select, input {
+      width: 100%;
+      padding: 12px;
+      margin: 10px 0;
+      border: 1px solid #ddd;
+      border-radius: 8px;
+    }
+
+    button {
+      width: 100%;
+      padding: 12px;
+      margin-top: 10px;
+      background: black;
+      color: white;
+      border: none;
+      border-radius: 8px;
+      cursor: pointer;
+      transition: 0.2s;
+    }
+
+    button:hover {
+      background: #333;
+    }
+
+    .otp-box {
+      margin-top: 20px;
+      padding: 15px;
+      background: #f1f1f1;
+      border-radius: 8px;
+      font-size: 18px;
+      letter-spacing: 2px;
+      word-break: break-all;
+    }
+
+    .copy-btn {
+      margin-top: 10px;
+      background: #0077ff;
+    }
+
+    .hint {
+      font-size: 12px;
+      color: #666;
+      margin-top: 5px;
+    }
+  </style>
+</head>
+
+<body>
+
+  <div class="box">
+    <h1>kuroto認証</h1>
+
+    <!-- SNS選択 -->
+    <select id="sns">
+      <option value="">SNSを選択</option>
+      <option value="x">X (Twitter)</option>
+      <option value="insta">Instagram</option>
+      <option value="youtube">YouTube</option>
+    </select>
+
+    <!-- ID入力 -->
+    <input type="text" id="handle" placeholder="@username">
+
+    <div class="hint">※ @から始まる形式のみ有効</div>
+
+    <button onclick="generateOTP()">認証コード生成</button>
+
+    <div id="result"></div>
+  </div>
+
+  <script>
+    function generateOTP() {
+      const sns = document.getElementById("sns").value;
+      const handle = document.getElementById("handle").value;
+      const result = document.getElementById("result");
+
+      // SNS未選択
+      if (!sns) {
+        alert("SNSを選択してください");
+        return;
+      }
+
+      // @チェック
+      if (!handle.startsWith("@")) {
+        alert("@から始めてください");
+        return;
+      }
+
+      // OTP生成（11桁 英数混合）
+      const chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
+      let otp = "";
+      for (let i = 0; i < 11; i++) {
+        otp += chars[Math.floor(Math.random() * chars.length)];
+      }
+
+      result.innerHTML = `
+        <div class="otp-box" id="otpText">${otp}</div>
+        <button class="copy-btn" onclick="copyOTP()">コードをコピー</button>
+        <p style="margin-top:10px;">
+          このコードをあなたのSNSアカウント（${handle}）に投稿してください
+        </p>
+      `;
+    }
+
+    function copyOTP() {
+      const text = document.getElementById("otpText").innerText;
+      navigator.clipboard.writeText(text);
+      alert("コピーしました");
+    }
+  </script>
+
+</body>
+</html>
