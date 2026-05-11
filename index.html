@@ -13,7 +13,6 @@
       font-family: Arial, sans-serif;
     }
 
-    /* ★ これがスムーズスクロール */
     html {
       scroll-behavior: smooth;
     }
@@ -23,7 +22,6 @@
       color: #111;
     }
 
-    /* ===== ナビ ===== */
     .navbar {
       position: fixed;
       top: 0;
@@ -42,15 +40,8 @@
       color: #111;
       text-decoration: none;
       font-weight: bold;
-      letter-spacing: 1px;
-      transition: 0.2s;
     }
 
-    .navbar a:hover {
-      color: #0077ff;
-    }
-
-    /* ===== ヒーロー ===== */
     .hero {
       height: 100vh;
       display: flex;
@@ -63,19 +54,26 @@
 
     .hero h1 {
       font-size: 64px;
-      letter-spacing: 2px;
     }
 
     .hero p {
       margin-top: 20px;
       color: #555;
-      font-size: 18px;
     }
 
-    /* ===== セクション ===== */
     section {
       padding: 120px 20%;
       min-height: 100vh;
+
+      /* アニメ用 */
+      opacity: 0;
+      transform: translateY(30px);
+      transition: all 0.8s ease;
+    }
+
+    section.show {
+      opacity: 1;
+      transform: translateY(0);
     }
 
     h2 {
@@ -87,88 +85,67 @@
     p {
       line-height: 1.8;
       color: #333;
-      font-size: 16px;
     }
 
-    /* 区切り */
     .divider {
       height: 1px;
       background: #eee;
       margin: 60px 0;
     }
-    section {
-  opacity: 0;
-  transform: translateY(30px);
-  transition: all 0.8s ease;
-}
-
-section.show {
-  opacity: 1;
-  transform: translateY(0);
-}
   </style>
 </head>
 
 <body>
 
-  <!-- ナビ -->
   <div class="navbar">
     <a href="#feature">FEATURE</a>
     <a href="#why">WHY VERIFLY</a>
     <a href="#purpose">PURPOSE</a>
   </div>
 
-  <!-- ヒーロー -->
   <div class="hero">
     <h1>VERIFLY</h1>
     <p>Human-made music verification layer for the AI era</p>
   </div>
 
-  <!-- FEATURE -->
   <section id="feature">
     <h2>FEATURE</h2>
-    <p>
-      Verifly provides a verification system that identifies whether music is created by humans or AI-assisted.
-      We analyze production metadata, stems, creation history, and social proof to generate a credibility score.
-    </p>
+    <p>Verifly provides a verification system...</p>
     <div class="divider"></div>
-    <p>
-      Artists can register their works and receive a verification badge that can be embedded across platforms.
-    </p>
+    <p>Artists can register their works...</p>
   </section>
 
-  <!-- WHY -->
   <section id="why">
     <h2>WHY VERIFLY</h2>
-    <p>
-      In a world where AI-generated music becomes indistinguishable from human creation,
-      trust becomes the most important layer in music consumption.
-    </p>
+    <p>In a world where AI-generated music...</p>
     <div class="divider"></div>
-    <p>
-      Verifly restores transparency by clearly signaling human creativity.
-    </p>
+    <p>Verifly restores transparency...</p>
   </section>
 
-  <!-- PURPOSE -->
   <section id="purpose">
     <h2>PURPOSE</h2>
-    <p>
-      We aim not to reject AI, but to preserve the identity and value of human creators.
-    </p>
+    <p>We aim not to reject AI...</p>
     <div class="divider"></div>
-    <p>
-      Verifly becomes a global standard for music authenticity.
-    </p>
+    <p>Verifly becomes a global standard...</p>
   </section>
-<body>
-
-  <!-- 画面の内容 -->
 
   <script>
-    // ここにJS
+    const sections = document.querySelectorAll("section");
+
+    const observer = new IntersectionObserver((entries) => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) {
+          entry.target.classList.add("show");
+        }
+      });
+    }, {
+      threshold: 0.2
+    });
+
+    sections.forEach(section => {
+      observer.observe(section);
+    });
   </script>
 
-</body>
 </body>
 </html>
