@@ -13,13 +13,17 @@
       font-family: Arial, sans-serif;
     }
 
-    body {
-      background: #0b0b0f;
-      color: white;
+    /* ★ これがスムーズスクロール */
+    html {
       scroll-behavior: smooth;
     }
 
-    /* ===== ナビバー ===== */
+    body {
+      background: #ffffff;
+      color: #111;
+    }
+
+    /* ===== ナビ ===== */
     .navbar {
       position: fixed;
       top: 0;
@@ -28,13 +32,14 @@
       justify-content: center;
       gap: 40px;
       padding: 20px;
-      background: rgba(0,0,0,0.6);
+      background: rgba(255,255,255,0.8);
       backdrop-filter: blur(10px);
+      border-bottom: 1px solid #eee;
       z-index: 1000;
     }
 
     .navbar a {
-      color: white;
+      color: #111;
       text-decoration: none;
       font-weight: bold;
       letter-spacing: 1px;
@@ -42,7 +47,7 @@
     }
 
     .navbar a:hover {
-      color: #00ffd5;
+      color: #0077ff;
     }
 
     /* ===== ヒーロー ===== */
@@ -53,17 +58,17 @@
       align-items: center;
       flex-direction: column;
       text-align: center;
-      background: radial-gradient(circle at center, #1a1a2e, #0b0b0f);
+      background: linear-gradient(to bottom, #ffffff, #f6f7fb);
     }
 
     .hero h1 {
-      font-size: 60px;
+      font-size: 64px;
       letter-spacing: 2px;
     }
 
     .hero p {
       margin-top: 20px;
-      color: #aaa;
+      color: #555;
       font-size: 18px;
     }
 
@@ -76,18 +81,19 @@
     h2 {
       font-size: 36px;
       margin-bottom: 20px;
-      color: #00ffd5;
+      color: #0077ff;
     }
 
     p {
       line-height: 1.8;
-      color: #ccc;
+      color: #333;
+      font-size: 16px;
     }
 
-    /* ===== 区切り感 ===== */
+    /* 区切り */
     .divider {
       height: 1px;
-      background: rgba(255,255,255,0.1);
+      background: #eee;
       margin: 60px 0;
     }
   </style>
@@ -121,16 +127,16 @@
     </p>
   </section>
 
-  <!-- WHY VERIFLY -->
+  <!-- WHY -->
   <section id="why">
     <h2>WHY VERIFLY</h2>
     <p>
-      In the near future, AI-generated music will become indistinguishable from human-made music.
-      Without transparency, listeners lose trust in what they are hearing.
+      In a world where AI-generated music becomes indistinguishable from human creation,
+      trust becomes the most important layer in music consumption.
     </p>
     <div class="divider"></div>
     <p>
-      Verifly restores that trust by introducing a visible proof layer for human creativity.
+      Verifly restores transparency by clearly signaling human creativity.
     </p>
   </section>
 
@@ -138,11 +144,11 @@
   <section id="purpose">
     <h2>PURPOSE</h2>
     <p>
-      Our goal is not to reject AI, but to preserve the identity of human creators in a world where creation becomes automated.
+      We aim not to reject AI, but to preserve the identity and value of human creators.
     </p>
     <div class="divider"></div>
     <p>
-      Verifly aims to become a global standard for music authenticity verification.
+      Verifly becomes a global standard for music authenticity.
     </p>
   </section>
 
