@@ -22,6 +22,7 @@
       color: #111;
     }
 
+    /* ===== ナビ ===== */
     .navbar {
       position: fixed;
       top: 0;
@@ -30,7 +31,7 @@
       justify-content: center;
       gap: 40px;
       padding: 20px;
-      background: rgba(255,255,255,0.8);
+      background: rgba(255,255,255,0.85);
       backdrop-filter: blur(10px);
       border-bottom: 1px solid #eee;
       z-index: 1000;
@@ -40,8 +41,14 @@
       color: #111;
       text-decoration: none;
       font-weight: bold;
+      transition: 0.2s;
     }
 
+    .navbar a:hover {
+      color: #0077ff;
+    }
+
+    /* ===== ヒーロー ===== */
     .hero {
       height: 100vh;
       display: flex;
@@ -54,20 +61,41 @@
 
     .hero h1 {
       font-size: 64px;
+      letter-spacing: 2px;
     }
 
     .hero p {
       margin-top: 20px;
       color: #555;
+      font-size: 16px;
     }
 
+    /* ===== ボタン ===== */
+    .verify-btn {
+      margin-top: 30px;
+      padding: 14px 28px;
+      background: #000;
+      color: #fff;
+      text-decoration: none;
+      font-weight: bold;
+      border-radius: 8px;
+      transition: 0.2s;
+      display: inline-block;
+    }
+
+    .verify-btn:hover {
+      background: #333;
+      transform: scale(1.05);
+    }
+
+    /* ===== セクション ===== */
     section {
       padding: 120px 20%;
       min-height: 100vh;
 
-      /* アニメ用 */
+      /* アニメ初期状態 */
       opacity: 0;
-      transform: translateY(30px);
+      transform: translateY(40px);
       transition: all 0.8s ease;
     }
 
@@ -85,6 +113,7 @@
     p {
       line-height: 1.8;
       color: #333;
+      font-size: 16px;
     }
 
     .divider {
@@ -92,43 +121,81 @@
       background: #eee;
       margin: 60px 0;
     }
+
+    /* スマホ対応（軽く） */
+    @media (max-width: 768px) {
+      section {
+        padding: 80px 10%;
+      }
+
+      .hero h1 {
+        font-size: 40px;
+      }
+
+      .navbar {
+        gap: 20px;
+        font-size: 14px;
+      }
+    }
+
   </style>
 </head>
 
 <body>
 
+  <!-- ナビ -->
   <div class="navbar">
     <a href="#feature">FEATURE</a>
     <a href="#why">WHY VERIFLY</a>
     <a href="#purpose">PURPOSE</a>
   </div>
 
+  <!-- ヒーロー -->
   <div class="hero">
     <h1>VERIFLY</h1>
+    <a class="verify-btn" href="ninsyo.html">認証を行う</a>
     <p>Human-made music verification layer for the AI era</p>
   </div>
 
+  <!-- FEATURE -->
   <section id="feature">
     <h2>FEATURE</h2>
-    <p>Verifly provides a verification system...</p>
+    <p>
+      Verifly provides a verification system that identifies whether music is created by humans or AI-assisted.
+      We analyze production metadata, stems, creation history, and social proof to generate a credibility score.
+    </p>
     <div class="divider"></div>
-    <p>Artists can register their works...</p>
+    <p>
+      Artists can register their works and receive a verification badge that can be embedded across platforms.
+    </p>
   </section>
 
+  <!-- WHY -->
   <section id="why">
     <h2>WHY VERIFLY</h2>
-    <p>In a world where AI-generated music...</p>
+    <p>
+      In a world where AI-generated music becomes indistinguishable from human creation,
+      trust becomes the most important layer in music consumption.
+    </p>
     <div class="divider"></div>
-    <p>Verifly restores transparency...</p>
+    <p>
+      Verifly restores transparency by clearly signaling human creativity.
+    </p>
   </section>
 
+  <!-- PURPOSE -->
   <section id="purpose">
     <h2>PURPOSE</h2>
-    <p>We aim not to reject AI...</p>
+    <p>
+      We aim not to reject AI, but to preserve the identity and value of human creators.
+    </p>
     <div class="divider"></div>
-    <p>Verifly becomes a global standard...</p>
+    <p>
+      Verifly becomes a global standard for music authenticity.
+    </p>
   </section>
 
+  <!-- スクロールアニメJS -->
   <script>
     const sections = document.querySelectorAll("section");
 
