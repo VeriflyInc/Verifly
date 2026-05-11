@@ -19,6 +19,26 @@
       align-items: center;
       height: 100vh;
       text-align: center;
+      position: relative;
+    }
+
+    /* 戻るボタン */
+    .back-btn {
+      position: absolute;
+      top: 20px;
+      left: 20px;
+      text-decoration: none;
+      color: #111;
+      font-weight: bold;
+      padding: 8px 12px;
+      border-radius: 8px;
+      transition: 0.2s;
+      background: white;
+      box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+    }
+
+    .back-btn:hover {
+      transform: scale(1.05);
     }
 
     .container {
@@ -32,6 +52,12 @@
     h1 {
       font-size: 28px;
       margin-bottom: 30px;
+    }
+
+    .sub {
+      font-size: 14px;
+      color: #666;
+      margin-bottom: 20px;
     }
 
     .btn {
@@ -52,28 +78,28 @@
       background: #333;
       transform: scale(1.03);
     }
-
-    .sub {
-      font-size: 14px;
-      color: #666;
-      margin-bottom: 20px;
-    }
   </style>
 </head>
 
 <body>
 
+  <!-- 戻る -->
+  <a class="back-btn" href="index.html">← 戻る</a>
+
   <div class="container">
     <h1>認証レベルを選択</h1>
     <div class="sub">あなたのSNS活動歴に基づいて審査方法が変わります</div>
 
-    <a class="btn" href="over1year.html">
+    <!-- 1年以上 -->
+    <a class="btn" href="kuroto.html">
       SNS活動歴が1年以上
     </a>
 
-    <a class="btn" href="under1year.html">
+    <!-- 1年未満 -->
+    <a class="btn" href="siroto.html">
       SNS活動歴が1年未満
     </a>
+
   </div>
 
 </body>
