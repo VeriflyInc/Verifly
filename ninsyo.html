@@ -5,53 +5,75 @@
   <title>Verifly - 認証</title>
 
   <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      font-family: Arial, sans-serif;
+    }
+
     body {
-      font-family: Arial;
       background: #f6f7fb;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
       text-align: center;
-      padding-top: 120px;
+    }
+
+    .container {
+      background: white;
+      padding: 50px;
+      border-radius: 16px;
+      box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+      width: 420px;
     }
 
     h1 {
-      font-size: 40px;
+      font-size: 28px;
+      margin-bottom: 30px;
     }
 
-    .box {
-      margin-top: 40px;
-      display: inline-block;
-      padding: 30px;
-      background: white;
-      border-radius: 12px;
-      box-shadow: 0 10px 30px rgba(0,0,0,0.1);
-    }
-
-    input {
-      padding: 10px;
-      width: 260px;
-      margin-top: 10px;
-    }
-
-    button {
-      margin-top: 20px;
-      padding: 10px 20px;
-      background: black;
-      color: white;
-      border: none;
+    .btn {
+      display: block;
+      width: 100%;
+      padding: 16px;
+      margin: 12px 0;
+      background: #000;
+      color: #fff;
+      text-decoration: none;
+      font-weight: bold;
+      border-radius: 10px;
+      transition: 0.2s;
       cursor: pointer;
-      border-radius: 6px;
+    }
+
+    .btn:hover {
+      background: #333;
+      transform: scale(1.03);
+    }
+
+    .sub {
+      font-size: 14px;
+      color: #666;
+      margin-bottom: 20px;
     }
   </style>
 </head>
 
 <body>
 
-  <h1>認証ページ</h1>
+  <div class="container">
+    <h1>認証レベルを選択</h1>
+    <div class="sub">あなたのSNS活動歴に基づいて審査方法が変わります</div>
 
-  <div class="box">
-    <p>アーティスト名を入力</p>
-    <input type="text" placeholder="例：メタリカ">
-    <br>
-    <button>認証開始</button>
+    <a class="btn" href="over1year.html">
+      SNS活動歴が1年以上
+    </a>
+
+    <a class="btn" href="under1year.html">
+      SNS活動歴が1年未満
+    </a>
   </div>
 
 </body>
