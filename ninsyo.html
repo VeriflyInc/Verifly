@@ -1,7 +1,8 @@
 <!DOCTYPE html>
 <html lang="ja">
 <head>
-  <meta charset="UTF-8">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Verifly - 認証</title>
 
   <style>
@@ -9,98 +10,314 @@
       margin: 0;
       padding: 0;
       box-sizing: border-box;
-      font-family: Arial, sans-serif;
+      font-family: Arial, "Hiragino Kaku Gothic ProN", "Yu Gothic", sans-serif;
+    }
+
+    html {
+      scroll-behavior: smooth;
     }
 
     body {
-      background: #f6f7fb;
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      height: 100vh;
-      text-align: center;
-      position: relative;
+      min-height: 100vh;
+      background:
+        radial-gradient(circle at 18% 20%, rgba(0, 119, 255, 0.12), transparent 32%),
+        linear-gradient(to bottom, #ffffff, #f5f7fb);
+      color: #111;
+      overflow-x: hidden;
     }
 
-    /* 戻るボタン */
-    .back-btn {
-      position: absolute;
-      top: 20px;
-      left: 20px;
-      text-decoration: none;
+    body.loaded .page-header,
+    body.loaded .choice-card,
+    body.loaded .info-box {
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    .navbar {
+      position: fixed;
+      top: 0;
+      width: 100%;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 18px 9vw;
+      background: rgba(255, 255, 255, 0.82);
+      backdrop-filter: blur(14px);
+      border-bottom: 1px solid rgba(0, 0, 0, 0.07);
+      z-index: 1000;
+    }
+
+    .logo {
       color: #111;
-      font-weight: bold;
-      padding: 8px 12px;
+      text-decoration: none;
+      font-size: 18px;
+      font-weight: 900;
+      letter-spacing: 0;
+    }
+
+    .back-btn {
+      color: #111;
+      text-decoration: none;
+      font-size: 13px;
+      font-weight: 800;
+      padding: 10px 14px;
+      border: 1px solid #e5e9f0;
       border-radius: 8px;
-      transition: 0.2s;
-      background: white;
-      box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+      background: rgba(255, 255, 255, 0.76);
+      transition: transform 0.25s ease, border-color 0.25s ease, color 0.25s ease;
     }
 
     .back-btn:hover {
-      transform: scale(1.05);
+      color: #0077ff;
+      border-color: #0077ff;
+      transform: translateY(-2px);
     }
 
-    .container {
-      background: white;
-      padding: 50px;
-      border-radius: 16px;
-      box-shadow: 0 10px 30px rgba(0,0,0,0.1);
-      width: 420px;
+    main {
+      width: min(1040px, calc(100% - 40px));
+      min-height: 100vh;
+      margin: 0 auto;
+      padding: 130px 0 72px;
+      display: grid;
+      align-content: center;
+    }
+
+    .page-header {
+      text-align: center;
+      margin-bottom: 34px;
+      opacity: 0;
+      transform: translateY(28px);
+      transition: opacity 0.8s ease, transform 0.8s ease;
+    }
+
+    .eyebrow {
+      display: inline-block;
+      margin-bottom: 14px;
+      color: #0077ff;
+      font-size: 13px;
+      font-weight: 900;
     }
 
     h1 {
-      font-size: 28px;
-      margin-bottom: 30px;
+      font-size: clamp(34px, 5vw, 56px);
+      line-height: 1.15;
+      margin-bottom: 18px;
+      letter-spacing: 0;
     }
 
-    .sub {
-      font-size: 14px;
-      color: #666;
-      margin-bottom: 20px;
+    .lead {
+      max-width: 680px;
+      margin: 0 auto;
+      color: #444;
+      font-size: 16px;
+      line-height: 1.9;
     }
 
-    .btn {
-      display: block;
-      width: 100%;
-      padding: 16px;
-      margin: 12px 0;
-      background: #000;
-      color: #fff;
+    .choice-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 22px;
+      margin-top: 34px;
+    }
+
+    .choice-card {
+      position: relative;
+      display: flex;
+      flex-direction: column;
+      min-height: 300px;
+      padding: 30px;
+      border: 1px solid #e5e9f0;
+      border-radius: 8px;
+      background: rgba(255, 255, 255, 0.78);
+      box-shadow: 0 22px 60px rgba(20, 30, 45, 0.08);
+      color: #111;
       text-decoration: none;
-      font-weight: bold;
-      border-radius: 10px;
-      transition: 0.2s;
-      cursor: pointer;
+      overflow: hidden;
+      opacity: 0;
+      transform: translateY(34px);
+      transition:
+        opacity 0.8s ease,
+        transform 0.8s ease,
+        border-color 0.25s ease,
+        box-shadow 0.25s ease;
     }
 
-    .btn:hover {
-      background: #333;
-      transform: scale(1.03);
+    .choice-card:nth-child(2) {
+      transition-delay: 0.12s;
+    }
+
+    .choice-card::before {
+      content: "";
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(135deg, rgba(0, 119, 255, 0.12), transparent 45%);
+      opacity: 0;
+      transition: opacity 0.25s ease;
+    }
+
+    .choice-card:hover {
+      transform: translateY(-6px);
+      border-color: #0077ff;
+      box-shadow: 0 28px 70px rgba(20, 30, 45, 0.14);
+    }
+
+    .choice-card:hover::before {
+      opacity: 1;
+    }
+
+    .choice-card > * {
+      position: relative;
+      z-index: 1;
+    }
+
+    .badge {
+      width: fit-content;
+      padding: 6px 11px;
+      border-radius: 999px;
+      background: #edf5ff;
+      color: #0077ff;
+      font-size: 12px;
+      font-weight: 900;
+      margin-bottom: 22px;
+    }
+
+    .choice-card h2 {
+      font-size: 26px;
+      line-height: 1.35;
+      margin-bottom: 14px;
+    }
+
+    .choice-card p {
+      color: #555;
+      font-size: 15px;
+      line-height: 1.85;
+    }
+
+    .choice-card .arrow {
+      margin-top: auto;
+      padding-top: 24px;
+      color: #0077ff;
+      font-size: 14px;
+      font-weight: 900;
+    }
+
+    .info-box {
+      margin: 28px auto 0;
+      max-width: 760px;
+      padding: 22px 24px;
+      border: 1px solid #e5e9f0;
+      border-left: 4px solid #38a169;
+      border-radius: 8px;
+      background: rgba(255, 255, 255, 0.74);
+      color: #465160;
+      font-size: 14px;
+      line-height: 1.85;
+      opacity: 0;
+      transform: translateY(24px);
+      transition: opacity 0.8s ease 0.22s, transform 0.8s ease 0.22s;
+    }
+
+    .footer-note {
+      margin-top: 34px;
+      text-align: center;
+      color: #8792a3;
+      font-size: 12px;
+    }
+
+    @media (max-width: 760px) {
+      .navbar {
+        padding: 16px 22px;
+      }
+
+      main {
+        width: min(100% - 34px, 1040px);
+        padding-top: 112px;
+      }
+
+      .choice-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .choice-card {
+        min-height: 250px;
+        padding: 26px;
+      }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      html {
+        scroll-behavior: auto;
+      }
+
+      *,
+      *::before,
+      *::after {
+        animation: none !important;
+        transition: none !important;
+      }
+
+      .page-header,
+      .choice-card,
+      .info-box {
+        opacity: 1;
+        transform: none;
+      }
     }
   </style>
 </head>
 
 <body>
+  <nav class="navbar">
+    <a class="logo" href="index.html">VERIFLY</a>
+    <a class="back-btn" href="index.html">← TOPへ戻る</a>
+  </nav>
 
-  <!-- 戻る -->
-  <a class="back-btn" href="index.html">← 戻る</a>
+  <main>
+    <div class="page-header">
+      <span class="eyebrow">VERIFICATION ROUTE</span>
+      <h1>活動歴を選択</h1>
+      <p class="lead">
+        Veriflyでは、アーティストの活動状況によって提出しやすい証跡が違うことを前提にしています。
+        まずはSNSや音楽活動の期間を選び、あなたに合った認証ルートへ進んでください。
+      </p>
+    </div>
 
-  <div class="container">
-    <h1>認証レベルを選択</h1>
-    <div class="sub">あなたのSNS活動歴に基づいて審査方法が変わります</div>
+    <div class="choice-grid">
+      <a class="choice-card" href="kuroto.html">
+        <span class="badge">1年以上</span>
+        <h2>SNS活動歴が<br />1年以上</h2>
+        <p>
+          ライブ出演、過去リリース、SNS投稿、共同制作、ファンコミュニティなど、
+          継続した活動の証跡を使って認証します。
+        </p>
+        <span class="arrow">このルートで進む →</span>
+      </a>
 
-    <!-- 1年以上 -->
-    <a class="btn" href="kuroto.html">
-      SNS活動歴が1年以上
-    </a>
+      <a class="choice-card" href="siroto.html">
+        <span class="badge">1年未満</span>
+        <h2>SNS活動歴が<br />1年未満</h2>
+        <p>
+          DAWプロジェクト、制作過程、本人確認、共同制作者の承認など、
+          活動歴が短くても提出できる証跡を使って認証します。
+        </p>
+        <span class="arrow">このルートで進む →</span>
+      </a>
+    </div>
 
-    <!-- 1年未満 -->
-    <a class="btn" href="siroto.html">
-      SNS活動歴が1年未満
-    </a>
+    <div class="info-box">
+      AIの使用そのものを禁止するのではなく、作品に対して人間の創作関与がどれだけ確認できるかを評価します。
+      活動歴が短い場合でも、制作過程や本人性を示すことで認証ルートに進めます。
+    </div>
 
-  </div>
+    <div class="footer-note">
+      © 2026 Verifly
+    </div>
+  </main>
 
+  <script>
+    window.addEventListener("load", () => {
+      document.body.classList.add("loaded");
+    });
+  </script>
 </body>
 </html>
