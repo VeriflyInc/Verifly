@@ -1,22 +1,12 @@
 function json(data, status = 200) {
   return new Response(JSON.stringify(data), {
     status,
-    headers: {
-      "Content-Type": "application/json; charset=utf-8"
-    }
+    headers: { "Content-Type": "application/json; charset=utf-8" }
   });
 }
 
 function normalizeISRC(value) {
-  return String(value || "")
-    .trim()
-    .replace(/-/g, "")
-    .replace(/\s/g, "")
-    .toUpperCase();
-}
-
-function normalizeHandle(value) {
-  return String(value || "").trim();
+  return String(value || "").trim().replace(/-/g, "").replace(/\s/g, "").toUpperCase();
 }
 
 function isValidISRC(isrc) {
@@ -25,7 +15,6 @@ function isValidISRC(isrc) {
 
 function musicBrainzHeaders(env) {
   const contact = env.CONTACT_EMAIL || "no-contact@example.com";
-
   return {
     "User-Agent": `Verifly/0.1 (${contact})`,
     "Accept": "application/json"
@@ -33,29 +22,18 @@ function musicBrainzHeaders(env) {
 }
 
 function pickFirstRecording(data) {
-  if (Array.isArray(data.recordings) && data.recordings.length > 0) {
-    return data.recordings[0];
-  }
-
-  if (Array.isArray(data.isrcs) && data.isrcs[0]?.recordings?.length > 0) {
-    return data.isrcs[0].recordings[0];
-  }
-
+  if (Array.isArray(data.recordings) && data.recordings.length > 0) return data.recordings[0];
+  if (Array.isArray(data.isrcs) && data.isrcs[0]?.recordings?.length > 0) return data.isrcs[0].recordings[0];
   return null;
 }
 
 function getArtistFromRecording(recording) {
   const artistCredit = recording?.["artist-credit"];
-
   if (!Array.isArray(artistCredit) || artistCredit.length === 0) {
-    return {
-      artistName: "",
-      artistId: ""
-    };
+    return { artistName: "", artistId: "" };
   }
 
   const firstCredit = artistCredit.find((credit) => credit.artist)?.artist;
-
   return {
     artistName: firstCredit?.name || "",
     artistId: firstCredit?.id || ""
@@ -74,18 +52,45 @@ function isSocialOrOfficialUrl(url) {
     "spotify.com",
     "music.apple.com",
     "soundcloud.com",
-    "bandcamp.com",
-    "official"
+    "bandcamp.com"
   ].some((domain) => url.includes(domain));
+}
+
+function extractHandleFromUrl(rawUrl, sns) {
+  try {
+    const url = new URL(rawUrl);
+    const host = url.hostname.replace(/^www\./, "").toLowerCase();
+    const parts = url.pathname.split("/").filter(Boolean);
+
+    if (sns === "x" && (host === "x.com" || host === "twitter.com")) {
+      const handle = parts[0] || "";
+      if (!handle || ["share", "intent", "home", "search"].includes(handle.toLowerCase())) return "";
+      return handle.replace(/^@/, "").toLowerCase();
+    }
+
+    return "";
+  } catch {
+    return "";
+  }
+}
+
+function buildOfficialHandles(links) {
+  const officialHandles = { x: [] };
+
+  links.forEach((link) => {
+    const handle = extractHandleFromUrl(link.url, "x");
+    if (handle && !officialHandles.x.includes(handle)) {
+      officialHandles.x.push(handle);
+    }
+  });
+
+  return officialHandles;
 }
 
 async function fetchArtistLinks(artistId, env) {
   if (!artistId) return [];
 
-  const url = new URL(
-    `https://musicbrainz.org/ws/2/artist/${encodeURIComponent(artistId)}`
-  );
-
+  const url = new URL(`https://musicbrainz.org/ws/2/artist/${encodeURIComponent(artistId)}`);
   url.searchParams.set("inc", "url-rels");
   url.searchParams.set("fmt", "json");
 
@@ -93,33 +98,23 @@ async function fetchArtistLinks(artistId, env) {
     headers: musicBrainzHeaders(env)
   });
 
-  if (!response.ok) {
-    return [];
-  }
+  if (!response.ok) return [];
 
   const data = await response.json();
   const relations = Array.isArray(data.relations) ? data.relations : [];
 
   return relations
-    .map((relation) => {
-      const targetUrl = relation?.url?.resource || "";
-
-      return {
-        type: relation.type || "url",
-        url: targetUrl
-      };
-    })
+    .map((relation) => ({
+      type: relation.type || "url",
+      url: relation?.url?.resource || ""
+    }))
     .filter((link) => link.url)
     .filter((link) => isSocialOrOfficialUrl(link.url.toLowerCase()));
 }
 
 async function lookupMusicBrainzByISRC(isrc, env) {
-  const url = new URL(
-    `https://musicbrainz.org/ws/2/isrc/${encodeURIComponent(isrc)}`
-  );
-
+  const url = new URL(`https://musicbrainz.org/ws/2/isrc/${encodeURIComponent(isrc)}`);
   url.searchParams.set("inc", "artist-credits+releases");
-
   url.searchParams.set("fmt", "json");
 
   const response = await fetch(url.toString(), {
@@ -127,30 +122,24 @@ async function lookupMusicBrainzByISRC(isrc, env) {
   });
 
   if (response.status === 404) {
-    throw new Error(
-      "このISRCはMusicBrainzでは見つかりませんでした。Spotify連携を追加すると取得できる可能性があります。"
-    );
+    throw new Error("このISRCはMusicBrainzでは見つかりませんでした。Spotify連携を追加すると取得できる可能性があります。");
   }
 
   if (!response.ok) {
     const errorText = await response.text();
-
-    throw new Error(
-      `MusicBrainzでISRCを検索できませんでした。status=${response.status} ${errorText.slice(0, 160)}`
-    );
+    throw new Error(`MusicBrainzでISRCを検索できませんでした。status=${response.status} ${errorText.slice(0, 160)}`);
   }
 
   const data = await response.json();
   const recording = pickFirstRecording(data);
 
   if (!recording) {
-    throw new Error(
-      "このISRCに紐づく楽曲がMusicBrainzで見つかりませんでした。別のISRCで試すか、Spotify連携を追加してください。"
-    );
+    throw new Error("このISRCに紐づく楽曲がMusicBrainzで見つかりませんでした。別のISRCで試すか、Spotify連携を追加してください。");
   }
 
   const artist = getArtistFromRecording(recording);
   const officialLinks = await fetchArtistLinks(artist.artistId, env);
+  const officialHandles = buildOfficialHandles(officialLinks);
 
   return {
     provider: "MusicBrainz",
@@ -158,7 +147,8 @@ async function lookupMusicBrainzByISRC(isrc, env) {
     recordingId: recording.id || "",
     artistName: artist.artistName || "不明",
     artistId: artist.artistId || "",
-    officialLinks
+    officialLinks,
+    officialHandles
   };
 }
 
@@ -168,49 +158,17 @@ export async function onRequestPost({ request, env }) {
 
     const isrc = normalizeISRC(body.isrc);
     const sns = String(body.sns || "").trim();
-    const handle = normalizeHandle(body.handle);
 
     if (!env.VERIFLY_KV) {
-      return json(
-        {
-          ok: false,
-          message:
-            "VERIFLY_KV が見つかりません。Cloudflare PagesのBindingsを確認してください。"
-        },
-        500
-      );
+      return json({ ok: false, message: "VERIFLY_KV が見つかりません。Cloudflare PagesのBindingsを確認してください。" }, 500);
     }
 
-    if (!isrc) {
-      return json({ ok: false, message: "ISRCコードを入力してください。" }, 400);
-    }
-
-    if (!isValidISRC(isrc)) {
-      return json(
-        { ok: false, message: "ISRCコードの形式が正しくありません。" },
-        400
-      );
-    }
-
-    if (!sns) {
-      return json({ ok: false, message: "SNSを選択してください。" }, 400);
-    }
-
-    if (!handle.startsWith("@")) {
-      return json(
-        { ok: false, message: "SNS IDは @ から始めてください。" },
-        400
-      );
-    }
+    if (!isrc) return json({ ok: false, message: "ISRCコードを入力してください。" }, 400);
+    if (!isValidISRC(isrc)) return json({ ok: false, message: "ISRCコードの形式が正しくありません。" }, 400);
+    if (!sns) return json({ ok: false, message: "SNSを選択してください。" }, 400);
 
     if (sns !== "x") {
-      return json(
-        {
-          ok: false,
-          message: "現在このデモではX OAuthのみ対応しています。"
-        },
-        400
-      );
+      return json({ ok: false, message: "現在このデモではX OAuthのみ対応しています。" }, 400);
     }
 
     const metadata = await lookupMusicBrainzByISRC(isrc, env);
@@ -220,13 +178,13 @@ export async function onRequestPost({ request, env }) {
       sessionId,
       isrc,
       sns,
-      handle,
       provider: metadata.provider,
       trackTitle: metadata.trackTitle,
       recordingId: metadata.recordingId,
       artistName: metadata.artistName,
       artistId: metadata.artistId,
       officialLinks: metadata.officialLinks,
+      officialHandles: metadata.officialHandles,
       verified: false,
       reason: "OAuth verification has not started.",
       createdAt: new Date().toISOString()
@@ -241,21 +199,18 @@ export async function onRequestPost({ request, env }) {
       sessionId,
       isrc,
       sns,
-      handle,
       provider: metadata.provider,
       trackTitle: metadata.trackTitle,
       artistName: metadata.artistName,
       artistId: metadata.artistId,
       officialLinks: metadata.officialLinks,
+      officialHandles: metadata.officialHandles,
       oauthUrl: `/api/oauth/x/start?session=${encodeURIComponent(sessionId)}`
     });
   } catch (error) {
-    return json(
-      {
-        ok: false,
-        message: error.message || "認証準備中にエラーが発生しました。"
-      },
-      500
-    );
+    return json({
+      ok: false,
+      message: error.message || "認証準備中にエラーが発生しました。"
+    }, 500);
   }
 }
