@@ -37,7 +37,7 @@ function pickFirstRecording(data) {
     return data.recordings[0];
   }
 
-  if (Array.isArray(data["isrcs"]) && data.isrcs[0]?.recordings?.length > 0) {
+  if (Array.isArray(data.isrcs) && data.isrcs[0]?.recordings?.length > 0) {
     return data.isrcs[0].recordings[0];
   }
 
@@ -74,18 +74,22 @@ function isSocialOrOfficialUrl(url) {
     "spotify.com",
     "music.apple.com",
     "soundcloud.com",
-    "bandcamp.com"
+    "bandcamp.com",
+    "official"
   ].some((domain) => url.includes(domain));
 }
 
 async function fetchArtistLinks(artistId, env) {
   if (!artistId) return [];
 
-  const url = `https://musicbrainz.org/ws/2/artist/${encodeURIComponent(
-    artistId
-  )}?inc=url-rels&fmt=json`;
+  const url = new URL(
+    `https://musicbrainz.org/ws/2/artist/${encodeURIComponent(artistId)}`
+  );
 
-  const response = await fetch(url, {
+  url.searchParams.set("inc", "url-rels");
+  url.searchParams.set("fmt", "json");
+
+  const response = await fetch(url.toString(), {
     headers: musicBrainzHeaders(env)
   });
 
@@ -110,23 +114,38 @@ async function fetchArtistLinks(artistId, env) {
 }
 
 async function lookupMusicBrainzByISRC(isrc, env) {
-  const url = `https://musicbrainz.org/ws/2/isrc/${encodeURIComponent(
-    isrc
-  )}?inc=recordings+artist-credits+releases&fmt=json`;
+  const url = new URL(
+    `https://musicbrainz.org/ws/2/isrc/${encodeURIComponent(isrc)}`
+  );
 
-  const response = await fetch(url, {
+  url.searchParams.set("inc", "recordings+artist-credits+releases");
+  url.searchParams.set("fmt", "json");
+
+  const response = await fetch(url.toString(), {
     headers: musicBrainzHeaders(env)
   });
 
+  if (response.status === 404) {
+    throw new Error(
+      "このISRCはMusicBrainzでは見つかりませんでした。Spotify連携を追加すると取得できる可能性があります。"
+    );
+  }
+
   if (!response.ok) {
-    throw new Error("MusicBrainzでISRCを検索できませんでした。");
+    const errorText = await response.text();
+
+    throw new Error(
+      `MusicBrainzでISRCを検索できませんでした。status=${response.status} ${errorText.slice(0, 160)}`
+    );
   }
 
   const data = await response.json();
   const recording = pickFirstRecording(data);
 
   if (!recording) {
-    throw new Error("このISRCに紐づく楽曲がMusicBrainzで見つかりませんでした。");
+    throw new Error(
+      "このISRCに紐づく楽曲がMusicBrainzで見つかりませんでした。別のISRCで試すか、Spotify連携を追加してください。"
+    );
   }
 
   const artist = getArtistFromRecording(recording);
@@ -149,6 +168,17 @@ export async function onRequestPost({ request, env }) {
     const isrc = normalizeISRC(body.isrc);
     const sns = String(body.sns || "").trim();
     const handle = normalizeHandle(body.handle);
+
+    if (!env.VERIFLY_KV) {
+      return json(
+        {
+          ok: false,
+          message:
+            "VERIFLY_KV が見つかりません。Cloudflare PagesのBindingsを確認してください。"
+        },
+        500
+      );
+    }
 
     if (!isrc) {
       return json({ ok: false, message: "ISRCコードを入力してください。" }, 400);
