@@ -118,7 +118,8 @@ async function lookupMusicBrainzByISRC(isrc, env) {
     `https://musicbrainz.org/ws/2/isrc/${encodeURIComponent(isrc)}`
   );
 
-  url.searchParams.set("inc", "recordings+artist-credits+releases");
+  url.searchParams.set("inc", "artist-credits+releases");
+
   url.searchParams.set("fmt", "json");
 
   const response = await fetch(url.toString(), {
