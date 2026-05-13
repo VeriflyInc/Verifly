@@ -1,2 +1,0 @@
-start.js
-callback.js
