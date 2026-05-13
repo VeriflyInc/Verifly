@@ -1,3 +1,6 @@
+もちろんです。これを `index.html` に丸ごと貼り替えてください。
+
+```html
 <!DOCTYPE html>
 <html lang="ja">
 <head>
@@ -29,6 +32,10 @@
     body.loaded .visual-box {
       opacity: 1;
       transform: translateY(0);
+    }
+
+    body.is-scrolling {
+      pointer-events: none;
     }
 
     .navbar {
@@ -172,6 +179,7 @@
       0%, 100% {
         transform: scaleY(0.45);
       }
+
       50% {
         transform: scaleY(1);
       }
@@ -282,6 +290,74 @@
       color: #555;
     }
 
+    .footer {
+      padding: 54px 9vw;
+      background: #111111;
+      color: #ffffff;
+    }
+
+    .footer-inner {
+      display: flex;
+      justify-content: space-between;
+      gap: 28px;
+      align-items: flex-end;
+      border-top: 1px solid rgba(255, 255, 255, 0.16);
+      padding-top: 28px;
+    }
+
+    .footer h2 {
+      color: #ffffff;
+      font-size: 28px;
+      margin-bottom: 10px;
+    }
+
+    .footer p {
+      color: #cbd5e1;
+      font-size: 14px;
+      line-height: 1.8;
+    }
+
+    .footer small {
+      color: #8b96a8;
+      font-size: 12px;
+    }
+
+    .back-to-top {
+      position: fixed;
+      right: 22px;
+      bottom: 22px;
+      width: 48px;
+      height: 48px;
+      border: none;
+      border-radius: 50%;
+      background: #111111;
+      color: #ffffff;
+      font-size: 18px;
+      font-weight: 800;
+      cursor: pointer;
+      box-shadow: 0 14px 34px rgba(0, 0, 0, 0.22);
+      opacity: 0;
+      visibility: hidden;
+      transform: translateY(14px);
+      transition:
+        opacity 0.25s ease,
+        visibility 0.25s ease,
+        transform 0.25s ease,
+        background 0.25s ease;
+      z-index: 1200;
+    }
+
+    .back-to-top.show {
+      opacity: 1;
+      visibility: visible;
+      transform: translateY(0);
+    }
+
+    .back-to-top:hover {
+      background: #0077ff;
+      transform: translateY(-3px);
+    }
+
     @media (max-width: 900px) {
       .hero {
         grid-template-columns: 1fr;
@@ -298,6 +374,20 @@
 
       .mini-grid {
         grid-template-columns: 1fr;
+      }
+    }
+
+    @media (max-width: 700px) {
+      .footer-inner {
+        flex-direction: column;
+        align-items: flex-start;
+      }
+
+      .back-to-top {
+        right: 16px;
+        bottom: 16px;
+        width: 44px;
+        height: 44px;
       }
     }
 
@@ -451,6 +541,23 @@
     </p>
   </section>
 
+  <footer class="footer">
+    <div class="footer-inner">
+      <div>
+        <h2>VERIFLY</h2>
+        <p>
+          Human-made music verification layer for the AI era.<br />
+          音楽が誰によって作られたのかを、透明に示すための認証レイヤー。
+        </p>
+      </div>
+      <small>© 2026 Verifly. All rights reserved.</small>
+    </div>
+  </footer>
+
+  <button class="back-to-top" type="button" aria-label="ページの一番上へ戻る">
+    ↑
+  </button>
+
   <script>
     window.addEventListener("load", () => {
       document.body.classList.add("loaded");
@@ -458,6 +565,7 @@
 
     const sections = document.querySelectorAll("section");
     const navLinks = document.querySelectorAll(".navbar a");
+    const backToTop = document.querySelector(".back-to-top");
 
     const observer = new IntersectionObserver((entries) => {
       entries.forEach((entry) => {
@@ -490,6 +598,65 @@
 
       visualBox.style.transform = `translate(${x}px, ${y}px)`;
     });
+
+    function smoothScrollTo(targetY, duration = 900) {
+      const startY = window.scrollY;
+      const distance = targetY - startY;
+      const startTime = performance.now();
+
+      document.body.classList.add("is-scrolling");
+
+      function easeInOutCubic(t) {
+        return t < 0.5
+          ? 4 * t * t * t
+          : 1 - Math.pow(-2 * t + 2, 3) / 2;
+      }
+
+      function animateScroll(currentTime) {
+        const elapsed = currentTime - startTime;
+        const progress = Math.min(elapsed / duration, 1);
+        const easedProgress = easeInOutCubic(progress);
+
+        window.scrollTo(0, startY + distance * easedProgress);
+
+        if (progress < 1) {
+          requestAnimationFrame(animateScroll);
+        } else {
+          document.body.classList.remove("is-scrolling");
+        }
+      }
+
+      requestAnimationFrame(animateScroll);
+    }
+
+    navLinks.forEach((link) => {
+      link.addEventListener("click", (event) => {
+        const href = link.getAttribute("href");
+
+        if (!href || !href.startsWith("#")) return;
+
+        const target = document.querySelector(href);
+        if (!target) return;
+
+        event.preventDefault();
+
+        const targetY = target.getBoundingClientRect().top + window.scrollY - 70;
+        smoothScrollTo(targetY, 950);
+      });
+    });
+
+    window.addEventListener("scroll", () => {
+      if (window.scrollY > 500) {
+        backToTop.classList.add("show");
+      } else {
+        backToTop.classList.remove("show");
+      }
+    });
+
+    backToTop.addEventListener("click", () => {
+      smoothScrollTo(0, 1000);
+    });
   </script>
 </body>
 </html>
+```
