@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Verifly - 活動歴1年以上向け本人確認</title>
+  <title>Verifly - ISRC認証開始</title>
 
   <style>
     * {
@@ -75,7 +75,7 @@
     }
 
     .page-header {
-      max-width: 760px;
+      max-width: 790px;
       margin-bottom: 34px;
       opacity: 0;
       transform: translateY(28px);
@@ -147,8 +147,8 @@
       font-weight: 900;
     }
 
-    select,
-    input {
+    input,
+    select {
       width: 100%;
       padding: 14px 14px;
       margin-bottom: 16px;
@@ -172,8 +172,8 @@
       color: #111111;
     }
 
-    select:focus,
-    input:focus {
+    input:focus,
+    select:focus {
       border-color: #0077ff;
       box-shadow: 0 0 0 4px rgba(0, 119, 255, 0.12);
     }
@@ -186,8 +186,7 @@
       line-height: 1.7;
     }
 
-    button,
-    .next-btn {
+    button {
       width: 100%;
       padding: 15px;
       border: none;
@@ -197,77 +196,36 @@
       font-size: 15px;
       font-weight: 900;
       cursor: pointer;
-      text-decoration: none;
-      text-align: center;
-      display: inline-block;
       transition: transform 0.25s ease, background 0.25s ease, box-shadow 0.25s ease;
     }
 
-    button:hover,
-    .next-btn:hover {
+    button:hover {
       background: #222;
       transform: translateY(-2px);
       box-shadow: 0 14px 34px rgba(0, 0, 0, 0.16);
     }
 
-    .otp-box {
-      margin-top: 22px;
-      padding: 18px;
-      border: 1px solid #dfe5ee;
-      border-radius: 8px;
-      background: #f8fafc;
-      color: #111;
-      font-size: 22px;
-      font-weight: 900;
-      letter-spacing: 3px;
-      word-break: break-all;
-      animation: resultIn 0.45s ease both;
-    }
-
-    .copy-btn {
-      margin-top: 12px;
-      background: #0077ff;
-    }
-
-    .copy-btn:hover {
-      background: #0068de;
-    }
-
-    .result-message {
-      margin-top: 14px;
-      color: #444;
-      font-size: 14px;
-      line-height: 1.8;
-      animation: resultIn 0.45s ease both;
-    }
-
-    .copy-status {
+    .error-message {
       display: none;
-      margin-top: 10px;
-      color: #38a169;
+      margin-top: 14px;
+      padding: 14px;
+      border-radius: 8px;
+      background: #fff1f2;
+      color: #be123c;
       font-size: 13px;
-      font-weight: 900;
+      font-weight: 800;
+      line-height: 1.7;
     }
 
-    .copy-status.show {
+    .error-message.show {
       display: block;
       animation: resultIn 0.35s ease both;
-    }
-
-    .next-area {
-      display: none;
-      margin-top: 18px;
-      animation: resultIn 0.45s ease both;
-    }
-
-    .next-area.show {
-      display: block;
     }
 
     @keyframes resultIn {
       from {
         opacity: 0;
-        transform: translateY(14px);
+        transform: translateY(12px);
       }
 
       to {
@@ -304,6 +262,10 @@
 
     .step-card:nth-child(3) {
       transition-delay: 0.36s;
+    }
+
+    .step-card:nth-child(4) {
+      transition-delay: 0.46s;
     }
 
     .step-card:hover {
@@ -388,62 +350,93 @@
 
   <main>
     <div class="page-header">
-      <span class="eyebrow">IDENTITY VERIFICATION</span>
-      <h1>活動歴1年以上向け本人確認</h1>
+      <span class="eyebrow">ISRC + ACCOUNT VERIFICATION</span>
+      <h1>ISRCから本人確認を開始</h1>
       <p class="lead">
-        まずは本人が管理しているSNSアカウントを確認します。
-        本人確認が完了したあと、次のページでアーティストの活動形態を選択し、
-        その形態に合った証跡提出へ進みます。
+        楽曲のISRCをもとに、SpotifyやMusicBrainzなどのメタデータからアーティスト情報を取得します。
+        次のページでSNS OAuth認証を行い、メタデータ上の公式SNSとログインしたSNSアカウントが一致するかを確認します。
       </p>
     </div>
 
     <div class="layout">
       <section class="verify-panel">
-        <h2 class="panel-title">SNS本人確認</h2>
+        <h2 class="panel-title">認証に使う情報</h2>
         <p class="panel-sub">
-          使用しているSNSを選択し、@から始まるアカウントIDを入力してください。
-          生成されたコードをSNSに投稿することで、本人確認の証跡になります。
+          ISRCコードと、照合したいSNSを選択してください。
+          入力内容は次の認証ページに引き継がれます。
         </p>
 
-        <label for="sns">SNSを選択</label>
+        <label for="isrc">ISRCコード</label>
+        <input
+          type="text"
+          id="isrc"
+          placeholder="例: USUM71703861"
+          autocomplete="off"
+          maxlength="15"
+        />
+
+        <div class="hint">
+          ※ ISRCは通常12文字です。ハイフンが入っていても自動で整形します。
+        </div>
+
+        <label for="sns">照合するSNS</label>
         <select id="sns">
           <option value="">選択してください</option>
-          <option value="X">X (Twitter)</option>
-          <option value="Instagram">Instagram</option>
-          <option value="YouTube">YouTube</option>
+          <option value="x">X (Twitter)</option>
+          <option value="instagram">Instagram</option>
+          <option value="youtube">YouTube</option>
         </select>
 
-        <label for="handle">アカウントID</label>
-        <input type="text" id="handle" placeholder="@username" />
+        <label for="handle">申請するSNS ID</label>
+        <input
+          type="text"
+          id="handle"
+          placeholder="@username"
+          autocomplete="off"
+        />
 
-        <div class="hint">※ @から始まる形式のみ有効です</div>
-
-        <button type="button" onclick="generateOTP()">認証コード生成</button>
-
-        <div id="result"></div>
-
-        <div class="next-area" id="nextArea">
-          <a class="next-btn" href="artist-type.html">本人確認後、活動形態を選択する</a>
+        <div class="hint">
+          ※ OAuthでログインしたアカウントIDと、このIDが一致するかを次のページで確認します。
         </div>
+
+        <button type="button" onclick="startVerification()">
+          認証ページへ進む
+        </button>
+
+        <div class="error-message" id="errorMessage"></div>
       </section>
 
       <div class="steps">
         <div class="step-card">
           <strong>STEP 01</strong>
-          <h2>SNS本人確認</h2>
-          <p>本人が管理しているSNSアカウントに、一時コードを投稿して確認します。</p>
+          <h2>ISRC入力</h2>
+          <p>
+            楽曲に紐づくISRCを入力し、外部APIからアーティスト名とアーティスト固有IDを取得します。
+          </p>
         </div>
 
         <div class="step-card">
           <strong>STEP 02</strong>
-          <h2>活動形態の選択</h2>
-          <p>ボカロP、バンド、EDM系、過去活動アーティストなどから近い形態を選択します。</p>
+          <h2>メタデータ取得</h2>
+          <p>
+            Spotify、MusicBrainzなど複数APIを参照し、取得できた情報をキャッシュしながら利用します。
+          </p>
         </div>
 
         <div class="step-card">
           <strong>STEP 03</strong>
-          <h2>証跡提出</h2>
-          <p>選択した活動形態に応じて、提出できる証跡の選択肢が変わります。</p>
+          <h2>OAuth照合</h2>
+          <p>
+            ログインしたSNSアカウントIDと、メタデータ側に登録された公式SNSリンクを照合します。
+          </p>
+        </div>
+
+        <div class="step-card">
+          <strong>STEP 04</strong>
+          <h2>証跡提出へ</h2>
+          <p>
+            本人確認後、活動形態を選択し、提出できる証跡を1項目1点でスコア化します。
+          </p>
         </div>
 
         <div class="score-note">
@@ -463,58 +456,88 @@
       document.body.classList.add("loaded");
     });
 
-    function generateOTP() {
-      const sns = document.getElementById("sns").value;
-      const handle = document.getElementById("handle").value.trim();
-      const result = document.getElementById("result");
-      const nextArea = document.getElementById("nextArea");
+    function normalizeISRC(value) {
+      return value
+        .trim()
+        .replace(/-/g, "")
+        .replace(/\s/g, "")
+        .toUpperCase();
+    }
+
+    function normalizeHandle(value) {
+      return value.trim();
+    }
+
+    function showError(message) {
+      const errorMessage = document.getElementById("errorMessage");
+      errorMessage.textContent = message;
+      errorMessage.classList.add("show");
+    }
+
+    function clearError() {
+      const errorMessage = document.getElementById("errorMessage");
+      errorMessage.textContent = "";
+      errorMessage.classList.remove("show");
+    }
+
+    function startVerification() {
+      clearError();
+
+      const isrcInput = document.getElementById("isrc");
+      const snsInput = document.getElementById("sns");
+      const handleInput = document.getElementById("handle");
+
+      const isrc = normalizeISRC(isrcInput.value);
+      const sns = snsInput.value;
+      const handle = normalizeHandle(handleInput.value);
+
+      const isrcPattern = /^[A-Z]{2}[A-Z0-9]{3}[0-9]{7}$/;
+
+      if (!isrc) {
+        showError("ISRCコードを入力してください。");
+        return;
+      }
+
+      if (!isrcPattern.test(isrc)) {
+        showError("ISRCコードの形式を確認してください。例: USUM71703861");
+        return;
+      }
 
       if (!sns) {
-        alert("SNSを選択してください");
+        showError("照合するSNSを選択してください。");
         return;
       }
 
       if (!handle.startsWith("@")) {
-        alert("@から始めてください");
+        showError("SNS IDは @ から始めてください。");
         return;
       }
 
       if (handle.length < 2) {
-        alert("アカウントIDを入力してください");
+        showError("SNS IDを入力してください。");
         return;
       }
 
-      const chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
-      let otp = "";
+      const verificationSession = {
+        isrc: isrc,
+        sns: sns,
+        handle: handle,
+        startedAt: new Date().toISOString(),
+        status: "pending"
+      };
 
-      for (let i = 0; i < 11; i++) {
-        otp += chars[Math.floor(Math.random() * chars.length)];
-      }
+      sessionStorage.setItem(
+        "verifly_kuroto_verification",
+        JSON.stringify(verificationSession)
+      );
 
-      result.innerHTML = `
-        <div class="otp-box" id="otpText">${otp}</div>
-        <button class="copy-btn" type="button" onclick="copyOTP()">コードをコピー</button>
-        <p class="result-message">
-          このコードを ${sns} のアカウント（${handle}）に投稿してください。
-          投稿後、本人確認が完了したものとして次の活動形態選択へ進めます。
-        </p>
-        <div class="copy-status" id="copyStatus">コピーしました</div>
-      `;
-
-      nextArea.classList.add("show");
-    }
-
-    function copyOTP() {
-      const text = document.getElementById("otpText").innerText;
-      const status = document.getElementById("copyStatus");
-
-      navigator.clipboard.writeText(text).then(() => {
-        status.classList.add("show");
-
-        setTimeout(() => {
-          status.classList.remove("show");
-        }, 1800);
+      const params = new URLSearchParams({
+        isrc: isrc,
+        sns: sns,
+        handle: handle
       });
+
+      window.location.href = `kuroto_ninsyo.html?${params.toString()}`;
     }
   </script>
 </body>
