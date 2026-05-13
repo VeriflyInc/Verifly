@@ -4,413 +4,27 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Verifly - ISRC本人確認</title>
-
   <style>
-    * {
-      margin: 0;
-      padding: 0;
-      box-sizing: border-box;
-      font-family: Arial, "Hiragino Kaku Gothic ProN", "Yu Gothic", sans-serif;
-    }
-
-    body {
-      min-height: 100vh;
-      background:
-        radial-gradient(circle at 18% 20%, rgba(0, 119, 255, 0.12), transparent 32%),
-        linear-gradient(to bottom, #ffffff, #f5f7fb);
-      color: #111;
-      overflow-x: hidden;
-    }
-
-    body.loaded .page-header,
-    body.loaded .panel,
-    body.loaded .step-card {
-      opacity: 1;
-      transform: translateY(0);
-    }
-
-    .navbar {
-      position: fixed;
-      top: 0;
-      width: 100%;
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      padding: 18px 9vw;
-      background: rgba(255, 255, 255, 0.82);
-      backdrop-filter: blur(14px);
-      border-bottom: 1px solid rgba(0, 0, 0, 0.07);
-      z-index: 1000;
-    }
-
-    .logo {
-      color: #111;
-      text-decoration: none;
-      font-size: 18px;
-      font-weight: 900;
-    }
-
-    .back-btn {
-      color: #111;
-      text-decoration: none;
-      font-size: 13px;
-      font-weight: 800;
-      padding: 10px 14px;
-      border: 1px solid #e5e9f0;
-      border-radius: 8px;
-      background: rgba(255, 255, 255, 0.76);
-      transition: transform 0.25s ease, border-color 0.25s ease, color 0.25s ease;
-    }
-
-    .back-btn:hover {
-      color: #0077ff;
-      border-color: #0077ff;
-      transform: translateY(-2px);
-    }
-
-    main {
-      width: min(1120px, calc(100% - 40px));
-      margin: 0 auto;
-      padding: 130px 0 70px;
-    }
-
-    .page-header {
-      max-width: 820px;
-      margin-bottom: 34px;
-      opacity: 0;
-      transform: translateY(28px);
-      transition: opacity 0.8s ease, transform 0.8s ease;
-    }
-
-    .eyebrow {
-      display: inline-block;
-      margin-bottom: 14px;
-      color: #0077ff;
-      font-size: 13px;
-      font-weight: 900;
-    }
-
-    h1 {
-      font-size: clamp(34px, 5vw, 56px);
-      line-height: 1.15;
-      margin-bottom: 18px;
-    }
-
-    .lead {
-      color: #444;
-      font-size: 16px;
-      line-height: 1.9;
-    }
-
-    .layout {
-      display: grid;
-      grid-template-columns: 1fr 0.9fr;
-      gap: 24px;
-      align-items: start;
-    }
-
-    .panel {
-      padding: 30px;
-      border: 1px solid #e5e9f0;
-      border-radius: 8px;
-      background: rgba(255, 255, 255, 0.78);
-      box-shadow: 0 22px 60px rgba(20, 30, 45, 0.08);
-      opacity: 0;
-      transform: translateY(34px);
-      transition:
-        opacity 0.8s ease 0.08s,
-        transform 0.8s ease 0.08s,
-        box-shadow 0.25s ease;
-    }
-
-    .panel:hover {
-      box-shadow: 0 28px 70px rgba(20, 30, 45, 0.13);
-    }
-
-    .panel-title {
-      font-size: 24px;
-      margin-bottom: 10px;
-    }
-
-    .panel-sub {
-      color: #555;
-      font-size: 14px;
-      line-height: 1.8;
-      margin-bottom: 24px;
-    }
-
-    .status-box {
-      padding: 18px;
-      border-radius: 8px;
-      border: 1px solid #dfe5ee;
-      background: #f8fafc;
-      margin-bottom: 18px;
-    }
-
-    .status-label {
-      color: #0077ff;
-      font-size: 12px;
-      font-weight: 900;
-      margin-bottom: 8px;
-    }
-
-    .status-main {
-      font-size: 18px;
-      font-weight: 900;
-      line-height: 1.5;
-    }
-
-    .status-detail {
-      margin-top: 8px;
-      color: #555;
-      font-size: 13px;
-      line-height: 1.7;
-      word-break: break-word;
-    }
-
-    .meta-grid {
-      display: grid;
-      gap: 12px;
-      margin-top: 20px;
-    }
-
-    .meta-row {
-      display: grid;
-      grid-template-columns: 120px 1fr;
-      gap: 14px;
-      padding: 13px 0;
-      border-bottom: 1px solid #edf0f4;
-      font-size: 14px;
-    }
-
-    .meta-row strong {
-      color: #222;
-    }
-
-    .meta-row span {
-      color: #555;
-      word-break: break-word;
-    }
-
-    .actions {
-      display: grid;
-      gap: 12px;
-      margin-top: 24px;
-    }
-
-    button,
-    .primary-btn,
-    .secondary-btn {
-      width: 100%;
-      padding: 15px;
-      border: none;
-      border-radius: 8px;
-      background: #111;
-      color: #fff;
-      font-size: 15px;
-      font-weight: 900;
-      cursor: pointer;
-      text-decoration: none;
-      text-align: center;
-      display: inline-block;
-      transition: transform 0.25s ease, background 0.25s ease, box-shadow 0.25s ease;
-    }
-
-    button:hover,
-    .primary-btn:hover,
-    .secondary-btn:hover {
-      background: #222;
-      transform: translateY(-2px);
-      box-shadow: 0 14px 34px rgba(0, 0, 0, 0.16);
-    }
-
-    .secondary-btn {
-      background: #0077ff;
-    }
-
-    .secondary-btn:hover {
-      background: #0068de;
-    }
-
-    .primary-btn.disabled,
-    .secondary-btn.disabled {
-      pointer-events: none;
-      opacity: 0.48;
-      box-shadow: none;
-      transform: none;
-    }
-
-    .message {
-      display: none;
-      margin-top: 16px;
-      padding: 15px;
-      border-radius: 8px;
-      font-size: 13px;
-      font-weight: 800;
-      line-height: 1.7;
-      animation: resultIn 0.35s ease both;
-    }
-
-    .message.show {
-      display: block;
-    }
-
-    .message.error {
-      background: #fff1f2;
-      color: #be123c;
-    }
-
-    .message.success {
-      background: #f0fdf4;
-      color: #15803d;
-    }
-
-    .message.info {
-      background: #eff6ff;
-      color: #1d4ed8;
-    }
-
-    .steps {
-      display: grid;
-      gap: 16px;
-    }
-
-    .step-card {
-      padding: 22px;
-      border: 1px solid #e5e9f0;
-      border-radius: 8px;
-      background: rgba(255, 255, 255, 0.72);
-      opacity: 0;
-      transform: translateY(34px);
-      transition:
-        opacity 0.8s ease,
-        transform 0.8s ease,
-        border-color 0.25s ease;
-    }
-
-    .step-card:nth-child(1) {
-      transition-delay: 0.16s;
-    }
-
-    .step-card:nth-child(2) {
-      transition-delay: 0.26s;
-    }
-
-    .step-card:nth-child(3) {
-      transition-delay: 0.36s;
-    }
-
-    .step-card:nth-child(4) {
-      transition-delay: 0.46s;
-    }
-
-    .step-card:hover {
-      border-color: #0077ff;
-      transform: translateY(-4px);
-    }
-
-    .step-card strong {
-      display: block;
-      color: #0077ff;
-      font-size: 12px;
-      margin-bottom: 10px;
-    }
-
-    .step-card h2 {
-      font-size: 19px;
-      margin-bottom: 8px;
-    }
-
-    .step-card p {
-      color: #555;
-      font-size: 14px;
-      line-height: 1.8;
-    }
-
-    .score-note {
-      margin-top: 18px;
-      padding: 18px;
-      border-left: 4px solid #38a169;
-      border-radius: 8px;
-      background: rgba(255, 255, 255, 0.76);
-      color: #465160;
-      font-size: 14px;
-      line-height: 1.8;
-    }
-
-    .loader {
-      width: 22px;
-      height: 22px;
-      border: 3px solid #dbe5f0;
-      border-top-color: #0077ff;
-      border-radius: 50%;
-      animation: spin 0.8s linear infinite;
-      margin: 16px 0 0;
-    }
-
-    @keyframes spin {
-      to {
-        transform: rotate(360deg);
-      }
-    }
-
-    @keyframes resultIn {
-      from {
-        opacity: 0;
-        transform: translateY(12px);
-      }
-
-      to {
-        opacity: 1;
-        transform: translateY(0);
-      }
-    }
-
-    .footer-note {
-      margin-top: 34px;
-      text-align: center;
-      color: #8792a3;
-      font-size: 12px;
-    }
-
-    @media (max-width: 860px) {
-      .navbar {
-        padding: 16px 22px;
-      }
-
-      main {
-        width: min(100% - 34px, 1120px);
-        padding-top: 112px;
-      }
-
-      .layout {
-        grid-template-columns: 1fr;
-      }
-
-      .meta-row {
-        grid-template-columns: 1fr;
-        gap: 5px;
-      }
-    }
-
-    @media (prefers-reduced-motion: reduce) {
-      *,
-      *::before,
-      *::after {
-        animation: none !important;
-        transition: none !important;
-      }
-
-      .page-header,
-      .panel,
-      .step-card {
-        opacity: 1;
-        transform: none;
-      }
-    }
+    *{margin:0;padding:0;box-sizing:border-box;font-family:Arial,"Hiragino Kaku Gothic ProN","Yu Gothic",sans-serif}
+    body{min-height:100vh;background:radial-gradient(circle at 18% 20%,rgba(0,119,255,.12),transparent 32%),linear-gradient(to bottom,#fff,#f5f7fb);color:#111;overflow-x:hidden}
+    body.loaded .page-header,body.loaded .panel,body.loaded .step-card{opacity:1;transform:translateY(0)}
+    .navbar{position:fixed;top:0;width:100%;display:flex;justify-content:space-between;align-items:center;padding:18px 9vw;background:rgba(255,255,255,.82);backdrop-filter:blur(14px);border-bottom:1px solid rgba(0,0,0,.07);z-index:1000}
+    .logo{color:#111;text-decoration:none;font-size:18px;font-weight:900}.back-btn{color:#111;text-decoration:none;font-size:13px;font-weight:800;padding:10px 14px;border:1px solid #e5e9f0;border-radius:8px;background:rgba(255,255,255,.76);transition:.25s}
+    .back-btn:hover{color:#0077ff;border-color:#0077ff;transform:translateY(-2px)}
+    main{width:min(1120px,calc(100% - 40px));margin:0 auto;padding:130px 0 70px}.page-header{max-width:820px;margin-bottom:34px;opacity:0;transform:translateY(28px);transition:.8s}
+    .eyebrow{display:inline-block;margin-bottom:14px;color:#0077ff;font-size:13px;font-weight:900}h1{font-size:clamp(34px,5vw,56px);line-height:1.15;margin-bottom:18px}.lead{color:#444;font-size:16px;line-height:1.9}
+    .layout{display:grid;grid-template-columns:1fr .9fr;gap:24px;align-items:start}.panel{padding:30px;border:1px solid #e5e9f0;border-radius:8px;background:rgba(255,255,255,.78);box-shadow:0 22px 60px rgba(20,30,45,.08);opacity:0;transform:translateY(34px);transition:.8s}
+    .panel-title{font-size:24px;margin-bottom:10px}.panel-sub{color:#555;font-size:14px;line-height:1.8;margin-bottom:24px}.status-box{padding:18px;border-radius:8px;border:1px solid #dfe5ee;background:#f8fafc;margin-bottom:18px}
+    .status-label{color:#0077ff;font-size:12px;font-weight:900;margin-bottom:8px}.status-main{font-size:18px;font-weight:900;line-height:1.5}.status-detail{margin-top:8px;color:#555;font-size:13px;line-height:1.7;word-break:break-word}
+    .meta-grid{display:grid;gap:12px;margin-top:20px}.meta-row{display:grid;grid-template-columns:130px 1fr;gap:14px;padding:13px 0;border-bottom:1px solid #edf0f4;font-size:14px}.meta-row strong{color:#222}.meta-row span{color:#555;word-break:break-word}
+    .actions{display:grid;gap:12px;margin-top:24px}.primary-btn,.secondary-btn,button{width:100%;padding:15px;border:none;border-radius:8px;background:#111;color:#fff;font-size:15px;font-weight:900;cursor:pointer;text-decoration:none;text-align:center;display:inline-block;transition:.25s}
+    .secondary-btn{background:#0077ff}.secondary-btn:hover{background:#0068de}.primary-btn:hover,button:hover{background:#222}.disabled{pointer-events:none;opacity:.48}
+    .message{display:none;margin-top:16px;padding:15px;border-radius:8px;font-size:13px;font-weight:800;line-height:1.7}.message.show{display:block}.message.error{background:#fff1f2;color:#be123c}.message.success{background:#f0fdf4;color:#15803d}.message.info{background:#eff6ff;color:#1d4ed8}
+    .steps{display:grid;gap:16px}.step-card{padding:22px;border:1px solid #e5e9f0;border-radius:8px;background:rgba(255,255,255,.72);opacity:0;transform:translateY(34px);transition:.8s}.step-card strong{display:block;color:#0077ff;font-size:12px;margin-bottom:10px}.step-card h2{font-size:19px;margin-bottom:8px}.step-card p{color:#555;font-size:14px;line-height:1.8}
+    .score-note{margin-top:18px;padding:18px;border-left:4px solid #38a169;border-radius:8px;background:rgba(255,255,255,.76);color:#465160;font-size:14px;line-height:1.8}.loader{width:22px;height:22px;border:3px solid #dbe5f0;border-top-color:#0077ff;border-radius:50%;animation:spin .8s linear infinite;margin:16px 0 0}@keyframes spin{to{transform:rotate(360deg)}}.footer-note{margin-top:34px;text-align:center;color:#8792a3;font-size:12px}
+    @media(max-width:860px){.navbar{padding:16px 22px}main{width:min(100% - 34px,1120px);padding-top:112px}.layout{grid-template-columns:1fr}.meta-row{grid-template-columns:1fr;gap:5px}}
   </style>
 </head>
-
 <body>
   <nav class="navbar">
     <a class="logo" href="index.html">VERIFLY</a>
@@ -420,126 +34,55 @@
   <main>
     <div class="page-header">
       <span class="eyebrow">ISRC METADATA + OAUTH</span>
-      <h1>ISRCとSNSアカウントを照合</h1>
-      <p class="lead">
-        入力されたISRCから楽曲メタデータを取得し、SpotifyやMusicBrainzなどの情報と照合します。
-        その後、選択したSNSでOAuth認証を行い、ログインしたアカウントが申請IDと一致するか確認します。
-      </p>
+      <h1>ISRCとOAuthアカウントを照合</h1>
+      <p class="lead">ISRCから取得した公式SNS候補と、OAuthでログインしたSNSアカウントが一致するか確認します。</p>
     </div>
 
     <div class="layout">
       <section class="panel">
         <h2 class="panel-title">認証ステータス</h2>
-        <p class="panel-sub">
-          このページでは、ISRC検索、メタデータ取得、OAuth認証開始、認証結果確認を行います。
-        </p>
+        <p class="panel-sub">ISRC検索、公式SNS候補取得、OAuth照合を行います。</p>
 
         <div class="status-box">
           <div class="status-label" id="statusLabel">WAITING</div>
           <div class="status-main" id="statusMain">認証情報を読み込み中です</div>
-          <div class="status-detail" id="statusDetail">
-            kuroto.html から渡されたISRC、SNS、アカウントIDを確認しています。
-          </div>
+          <div class="status-detail" id="statusDetail">kuroto.html から渡されたISRCとSNSを確認しています。</div>
           <div class="loader" id="loader"></div>
         </div>
 
         <div class="meta-grid">
-          <div class="meta-row">
-            <strong>ISRC</strong>
-            <span id="viewIsrc">-</span>
-          </div>
-          <div class="meta-row">
-            <strong>SNS</strong>
-            <span id="viewSns">-</span>
-          </div>
-          <div class="meta-row">
-            <strong>申請ID</strong>
-            <span id="viewHandle">-</span>
-          </div>
-          <div class="meta-row">
-            <strong>楽曲名</strong>
-            <span id="viewTrack">取得前</span>
-          </div>
-          <div class="meta-row">
-            <strong>アーティスト</strong>
-            <span id="viewArtist">取得前</span>
-          </div>
-          <div class="meta-row">
-            <strong>取得元</strong>
-            <span id="viewProvider">取得前</span>
-          </div>
-          <div class="meta-row">
-            <strong>公式SNS候補</strong>
-            <span id="viewOfficialLinks">取得前</span>
-          </div>
+          <div class="meta-row"><strong>ISRC</strong><span id="viewIsrc">-</span></div>
+          <div class="meta-row"><strong>SNS</strong><span id="viewSns">-</span></div>
+          <div class="meta-row"><strong>楽曲名</strong><span id="viewTrack">取得前</span></div>
+          <div class="meta-row"><strong>アーティスト</strong><span id="viewArtist">取得前</span></div>
+          <div class="meta-row"><strong>取得元</strong><span id="viewProvider">取得前</span></div>
+          <div class="meta-row"><strong>公式X候補</strong><span id="viewOfficialHandles">取得前</span></div>
+          <div class="meta-row"><strong>公式SNS候補</strong><span id="viewOfficialLinks">取得前</span></div>
+          <div class="meta-row"><strong>OAuth結果</strong><span id="viewOAuth">未実行</span></div>
         </div>
 
         <div class="actions">
-          <button type="button" id="retryButton" onclick="prepareVerification()">
-            メタデータを再取得
-          </button>
-
-          <a class="secondary-btn disabled" id="oauthButton" href="#">
-            OAuth認証へ進む
-          </a>
-
-          <a class="primary-btn disabled" id="nextButton" href="artist-type.html">
-            活動形態の選択へ進む
-          </a>
+          <button type="button" onclick="prepareVerification()">メタデータを再取得</button>
+          <a class="secondary-btn disabled" id="oauthButton" href="#">OAuth認証へ進む</a>
+          <a class="primary-btn disabled" id="nextButton" href="artist-type.html">活動形態の選択へ進む</a>
         </div>
 
         <div class="message" id="messageBox"></div>
       </section>
 
       <div class="steps">
-        <div class="step-card">
-          <strong>STEP 01</strong>
-          <h2>ISRC検索</h2>
-          <p>
-            ISRCをバックエンドへ送信し、Spotify Search APIやMusicBrainz ISRC lookupで楽曲情報を取得します。
-          </p>
-        </div>
-
-        <div class="step-card">
-          <strong>STEP 02</strong>
-          <h2>メタデータ突合</h2>
-          <p>
-            取得したアーティストID、アーティスト名、公式SNS候補を使って申請情報と照合します。
-          </p>
-        </div>
-
-        <div class="step-card">
-          <strong>STEP 03</strong>
-          <h2>OAuth認証</h2>
-          <p>
-            XなどのOAuthでログインし、返ってきたSNSアカウントIDが申請IDと一致するか確認します。
-          </p>
-        </div>
-
-        <div class="step-card">
-          <strong>STEP 04</strong>
-          <h2>証跡提出へ</h2>
-          <p>
-            本人確認後、活動形態を選びます。提出できる証跡は1項目1点、合計2点以上で提出条件を満たします。
-          </p>
-        </div>
-
-        <div class="score-note">
-          注意: Spotify Web APIの一般的なアーティスト情報には、公式SNSリンクが常に含まれるわけではありません。
-          公式SNS照合はMusicBrainzのURL関係、公式サイト、YouTube、手動登録DBなどとの併用が現実的です。
-        </div>
+        <div class="step-card"><strong>STEP 01</strong><h2>ISRC検索</h2><p>ISRCから楽曲情報とアーティスト情報を取得します。</p></div>
+        <div class="step-card"><strong>STEP 02</strong><h2>公式SNS候補</h2><p>MusicBrainzのURL関係から公式SNS候補を取得します。</p></div>
+        <div class="step-card"><strong>STEP 03</strong><h2>OAuth照合</h2><p>OAuthログインしたXアカウントが公式X候補に含まれるか確認します。</p></div>
+        <div class="score-note">公式SNS候補がMusicBrainzにない場合は、Spotify連携や手動確認ルートを追加すると実用性が上がります。</div>
       </div>
     </div>
 
-    <div class="footer-note">
-      © 2026 Verifly
-    </div>
+    <div class="footer-note">© 2026 Verifly</div>
   </main>
 
   <script>
     const API_BASE_URL = "";
-
-
     let currentSessionId = "";
     let currentPayload = null;
 
@@ -555,14 +98,11 @@
       const queryData = {
         isrc: params.get("isrc"),
         sns: params.get("sns"),
-        handle: params.get("handle"),
         session: params.get("session"),
         oauth: params.get("oauth")
       };
 
-      if (queryData.session) {
-        currentSessionId = queryData.session;
-      }
+      if (queryData.session) currentSessionId = queryData.session;
 
       if (queryData.oauth === "done" && currentSessionId) {
         checkOAuthResult(currentSessionId);
@@ -570,30 +110,19 @@
       }
 
       let sessionData = null;
-
       if (stored) {
-        try {
-          sessionData = JSON.parse(stored);
-        } catch (error) {
-          sessionData = null;
-        }
+        try { sessionData = JSON.parse(stored); } catch { sessionData = null; }
       }
 
       currentPayload = {
         isrc: queryData.isrc || sessionData?.isrc || "",
-        sns: queryData.sns || sessionData?.sns || "",
-        handle: queryData.handle || sessionData?.handle || ""
+        sns: queryData.sns || sessionData?.sns || ""
       };
 
       renderInputData(currentPayload);
 
-      if (!currentPayload.isrc || !currentPayload.sns || !currentPayload.handle) {
-        setStatus(
-          "ERROR",
-          "認証情報が不足しています",
-          "kuroto.html に戻って、ISRC、SNS、アカウントIDを入力してください。",
-          false
-        );
+      if (!currentPayload.isrc || !currentPayload.sns) {
+        setStatus("ERROR", "認証情報が不足しています", "kuroto.html に戻って、ISRCとSNSを入力してください。", false);
         showMessage("認証に必要な情報が見つかりません。", "error");
         return;
       }
@@ -603,86 +132,40 @@
 
     function renderInputData(data) {
       document.getElementById("viewIsrc").textContent = data.isrc || "-";
-      document.getElementById("viewSns").textContent = getSnsLabel(data.sns);
-      document.getElementById("viewHandle").textContent = data.handle || "-";
-    }
-
-    function getSnsLabel(sns) {
-      const labels = {
-        x: "X (Twitter)",
-        instagram: "Instagram",
-        youtube: "YouTube"
-      };
-
-      return labels[sns] || sns || "-";
+      document.getElementById("viewSns").textContent = data.sns === "x" ? "X (Twitter)" : data.sns || "-";
     }
 
     async function prepareVerification() {
       if (!currentPayload) return;
 
-      setStatus(
-        "FETCHING",
-        "ISRCメタデータを取得中です",
-        "Spotify / MusicBrainzなどの外部APIをバックエンド経由で照会しています。",
-        true
-      );
-
+      setStatus("FETCHING", "ISRCメタデータを取得中です", "MusicBrainzなどの外部APIをバックエンド経由で照会しています。", true);
       clearMessage();
       disableOAuth();
 
       try {
         const response = await fetch(`${API_BASE_URL}/api/kuroto/prepare`, {
           method: "POST",
-          headers: {
-            "Content-Type": "application/json"
-          },
+          headers: { "Content-Type": "application/json" },
           body: JSON.stringify(currentPayload)
         });
 
         const data = await response.json();
-
-        if (!response.ok || !data.ok) {
-          throw new Error(data.message || "メタデータ取得に失敗しました。");
-        }
+        if (!response.ok || !data.ok) throw new Error(data.message || "メタデータ取得に失敗しました。");
 
         currentSessionId = data.sessionId;
-
         renderMetadata(data);
 
-        sessionStorage.setItem(
-          "verifly_kuroto_ninsyo_session",
-          JSON.stringify({
-            sessionId: data.sessionId,
-            isrc: currentPayload.isrc,
-            sns: currentPayload.sns,
-            handle: currentPayload.handle,
-            artistName: data.artistName,
-            artistId: data.artistId,
-            provider: data.provider
-          })
-        );
+        sessionStorage.setItem("verifly_kuroto_ninsyo_session", JSON.stringify({
+          sessionId: data.sessionId,
+          isrc: currentPayload.isrc,
+          sns: currentPayload.sns
+        }));
 
-        setStatus(
-          "READY",
-          "メタデータを取得しました",
-          "内容を確認し、OAuth認証へ進んでください。",
-          false
-        );
-
+        setStatus("READY", "メタデータを取得しました", "公式SNS候補を確認し、OAuth認証へ進んでください。", false);
         enableOAuth(data.oauthUrl);
-
-        showMessage(
-          "ISRCに紐づくメタデータを取得しました。次にSNS OAuthで本人確認を行います。",
-          "success"
-        );
+        showMessage("ISRCに紐づくメタデータを取得しました。次にSNS OAuthで本人確認を行います。", "success");
       } catch (error) {
-        setStatus(
-          "ERROR",
-          "メタデータ取得に失敗しました",
-          error.message,
-          false
-        );
-
+        setStatus("ERROR", "メタデータ取得に失敗しました", error.message, false);
         showMessage(error.message, "error");
       }
     }
@@ -693,96 +176,59 @@
       document.getElementById("viewProvider").textContent = data.provider || "不明";
 
       const officialLinks = data.officialLinks || [];
+      const officialHandles = data.officialHandles?.x || [];
 
-      if (officialLinks.length === 0) {
-        document.getElementById("viewOfficialLinks").textContent =
-          "公式SNS候補は見つかりませんでした";
-        return;
-      }
+      document.getElementById("viewOfficialHandles").textContent =
+        officialHandles.length ? officialHandles.map((h) => "@" + h).join(" / ") : "公式X候補は見つかりませんでした";
 
       document.getElementById("viewOfficialLinks").textContent =
-        officialLinks.map((link) => link.url || link).join(" / ");
+        officialLinks.length ? officialLinks.map((link) => link.url || link).join(" / ") : "公式SNS候補は見つかりませんでした";
+
+      if (data.oauth) {
+        document.getElementById("viewOAuth").textContent = `@${data.oauth.username}`;
+      }
     }
 
     async function checkOAuthResult(sessionId) {
-      setStatus(
-        "VERIFYING",
-        "OAuth認証結果を確認中です",
-        "ログインしたSNSアカウントと、申請ID・メタデータ側の公式SNS候補を照合しています。",
-        true
-      );
-
+      setStatus("VERIFYING", "OAuth認証結果を確認中です", "ログインしたSNSアカウントとISRC由来の公式SNS候補を照合しています。", true);
       clearMessage();
 
       try {
-        const response = await fetch(
-          `${API_BASE_URL}/api/kuroto/status?session=${encodeURIComponent(sessionId)}`
-        );
-
+        const response = await fetch(`${API_BASE_URL}/api/kuroto/status?session=${encodeURIComponent(sessionId)}`);
         const data = await response.json();
 
-        if (!response.ok || !data.ok) {
-          throw new Error(data.message || "OAuth認証結果の確認に失敗しました。");
-        }
+        if (!response.ok || !data.ok) throw new Error(data.message || "OAuth認証結果の確認に失敗しました。");
 
         currentSessionId = sessionId;
 
         if (data.metadata) {
           renderInputData({
             isrc: data.metadata.isrc,
-            sns: data.metadata.sns,
-            handle: data.metadata.handle
+            sns: data.metadata.sns
           });
-
           renderMetadata(data.metadata);
         }
 
         if (data.verified) {
-          setStatus(
-            "VERIFIED",
-            "本人確認が完了しました",
-            "OAuthアカウントと申請情報の照合が完了しました。活動形態の選択へ進めます。",
-            false
-          );
-
+          setStatus("VERIFIED", "本人確認が完了しました", "OAuthアカウントがISRC由来の公式SNS候補と一致しました。", false);
           enableNext();
           showMessage("本人確認が完了しました。次のページへ進んでください。", "success");
         } else {
-          setStatus(
-            "NOT VERIFIED",
-            "照合できませんでした",
-            data.reason || "OAuthでログインしたアカウントと申請IDが一致しませんでした。",
-            false
-          );
-
-          showMessage(
-            data.reason || "別のアカウントでログインした可能性があります。",
-            "error"
-          );
+          setStatus("NOT VERIFIED", "照合できませんでした", data.reason || "OAuthアカウントが公式SNS候補と一致しませんでした。", false);
+          showMessage(data.reason || "別のアカウントでログインした可能性があります。", "error");
         }
       } catch (error) {
-        setStatus(
-          "ERROR",
-          "認証結果の確認に失敗しました",
-          error.message,
-          false
-        );
-
+        setStatus("ERROR", "認証結果の確認に失敗しました", error.message, false);
         showMessage(error.message, "error");
       }
     }
 
     function enableOAuth(url) {
       const oauthButton = document.getElementById("oauthButton");
-
-      if (!url) {
-        disableOAuth();
-        return;
-      }
-
+      if (!url) return disableOAuth();
       oauthButton.href = url;
       oauthButton.classList.remove("disabled");
-      oauthButton.textContent = `${getSnsLabel(currentPayload.sns)} OAuth認証へ進む`;
+      oauthButton.textContent = "X OAuth認証へ進む";
     }
 
     function disableOAuth() {
@@ -795,11 +241,7 @@
     function enableNext() {
       const nextButton = document.getElementById("nextButton");
       const url = new URL("artist-type.html", window.location.href);
-
-      if (currentSessionId) {
-        url.searchParams.set("session", currentSessionId);
-      }
-
+      if (currentSessionId) url.searchParams.set("session", currentSessionId);
       nextButton.href = url.toString();
       nextButton.classList.remove("disabled");
     }
