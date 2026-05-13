@@ -1,7 +1,8 @@
 <!DOCTYPE html>
 <html lang="ja">
 <head>
-  <meta charset="UTF-8">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Verifly - 活動歴1年以上向け認証</title>
 
   <style>
@@ -9,141 +10,603 @@
       margin: 0;
       padding: 0;
       box-sizing: border-box;
-      font-family: Arial, sans-serif;
+      font-family: Arial, "Hiragino Kaku Gothic ProN", "Yu Gothic", sans-serif;
     }
 
     body {
-      background: #f6f7fb;
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      height: 100vh;
+      min-height: 100vh;
+      background:
+        radial-gradient(circle at 18% 20%, rgba(0, 119, 255, 0.12), transparent 32%),
+        linear-gradient(to bottom, #ffffff, #f5f7fb);
+      color: #111;
+      overflow-x: hidden;
     }
 
-    .box {
-      background: white;
-      padding: 40px;
-      border-radius: 16px;
-      width: 450px;
-      box-shadow: 0 10px 30px rgba(0,0,0,0.1);
-      text-align: center;
+    body.loaded .page-header,
+    body.loaded .verify-panel,
+    body.loaded .proof-panel {
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    .navbar {
+      position: fixed;
+      top: 0;
+      width: 100%;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 18px 9vw;
+      background: rgba(255, 255, 255, 0.82);
+      backdrop-filter: blur(14px);
+      border-bottom: 1px solid rgba(0, 0, 0, 0.07);
+      z-index: 1000;
+    }
+
+    .logo {
+      color: #111;
+      text-decoration: none;
+      font-size: 18px;
+      font-weight: 900;
+    }
+
+    .back-btn {
+      color: #111;
+      text-decoration: none;
+      font-size: 13px;
+      font-weight: 800;
+      padding: 10px 14px;
+      border: 1px solid #e5e9f0;
+      border-radius: 8px;
+      background: rgba(255, 255, 255, 0.76);
+      transition: transform 0.25s ease, border-color 0.25s ease, color 0.25s ease;
+    }
+
+    .back-btn:hover {
+      color: #0077ff;
+      border-color: #0077ff;
+      transform: translateY(-2px);
+    }
+
+    main {
+      width: min(1120px, calc(100% - 40px));
+      margin: 0 auto;
+      padding: 130px 0 70px;
+    }
+
+    .page-header {
+      max-width: 780px;
+      margin-bottom: 34px;
+      opacity: 0;
+      transform: translateY(28px);
+      transition: opacity 0.8s ease, transform 0.8s ease;
+    }
+
+    .eyebrow {
+      display: inline-block;
+      margin-bottom: 14px;
+      color: #0077ff;
+      font-size: 13px;
+      font-weight: 900;
     }
 
     h1 {
-      margin-bottom: 20px;
-      font-size: 26px;
+      font-size: clamp(34px, 5vw, 56px);
+      line-height: 1.15;
+      margin-bottom: 18px;
     }
 
-    select, input {
-      width: 100%;
-      padding: 12px;
-      margin: 10px 0;
-      border: 1px solid #ddd;
+    .lead {
+      color: #444;
+      font-size: 16px;
+      line-height: 1.9;
+    }
+
+    .layout {
+      display: grid;
+      grid-template-columns: 0.95fr 1.05fr;
+      gap: 24px;
+      align-items: start;
+    }
+
+    .verify-panel,
+    .proof-panel {
+      border: 1px solid #e5e9f0;
       border-radius: 8px;
+      background: rgba(255, 255, 255, 0.78);
+      box-shadow: 0 22px 60px rgba(20, 30, 45, 0.08);
+      opacity: 0;
+      transform: translateY(34px);
+      transition:
+        opacity 0.8s ease,
+        transform 0.8s ease,
+        box-shadow 0.25s ease;
+    }
+
+    .verify-panel {
+      padding: 30px;
+      transition-delay: 0.08s;
+    }
+
+    .proof-panel {
+      padding: 28px;
+      transition-delay: 0.18s;
+    }
+
+    .verify-panel:hover,
+    .proof-panel:hover {
+      box-shadow: 0 28px 70px rgba(20, 30, 45, 0.13);
+    }
+
+    .panel-title {
+      font-size: 24px;
+      margin-bottom: 10px;
+    }
+
+    .panel-sub {
+      color: #555;
+      font-size: 14px;
+      line-height: 1.8;
+      margin-bottom: 24px;
+    }
+
+    label {
+      display: block;
+      margin-bottom: 8px;
+      color: #222;
+      font-size: 13px;
+      font-weight: 900;
+    }
+
+    select,
+    input {
+      width: 100%;
+      padding: 14px 14px;
+      margin-bottom: 16px;
+      border: 1px solid #dfe5ee;
+      border-radius: 8px;
+      background-color: #ffffff;
+      color: #111111;
+      font-size: 15px;
+      outline: none;
+      color-scheme: light;
+      transition: border-color 0.2s ease, box-shadow 0.2s ease;
+    }
+
+    select {
+      appearance: auto;
+      -webkit-appearance: menulist;
+    }
+
+    select option {
+      background-color: #ffffff;
+      color: #111111;
+    }
+
+    select:focus,
+    input:focus {
+      border-color: #0077ff;
+      box-shadow: 0 0 0 4px rgba(0, 119, 255, 0.12);
+    }
+
+    .hint {
+      margin-top: -8px;
+      margin-bottom: 18px;
+      color: #6b7280;
+      font-size: 12px;
+      line-height: 1.7;
     }
 
     button {
       width: 100%;
-      padding: 12px;
-      margin-top: 10px;
-      background: black;
-      color: white;
+      padding: 15px;
       border: none;
       border-radius: 8px;
+      background: #111;
+      color: #fff;
+      font-size: 15px;
+      font-weight: 900;
       cursor: pointer;
-      transition: 0.2s;
+      transition: transform 0.25s ease, background 0.25s ease, box-shadow 0.25s ease;
     }
 
     button:hover {
-      background: #333;
+      background: #222;
+      transform: translateY(-2px);
+      box-shadow: 0 14px 34px rgba(0, 0, 0, 0.16);
     }
 
     .otp-box {
-      margin-top: 20px;
-      padding: 15px;
-      background: #f1f1f1;
+      margin-top: 22px;
+      padding: 18px;
+      border: 1px solid #dfe5ee;
       border-radius: 8px;
-      font-size: 18px;
-      letter-spacing: 2px;
+      background: #f8fafc;
+      color: #111;
+      font-size: 22px;
+      font-weight: 900;
+      letter-spacing: 3px;
       word-break: break-all;
+      animation: resultIn 0.45s ease both;
     }
 
     .copy-btn {
-      margin-top: 10px;
+      margin-top: 12px;
       background: #0077ff;
     }
 
-    .hint {
+    .copy-btn:hover {
+      background: #0068de;
+    }
+
+    .result-message {
+      margin-top: 14px;
+      color: #444;
+      font-size: 14px;
+      line-height: 1.8;
+      animation: resultIn 0.45s ease both;
+    }
+
+    .copy-status {
+      display: none;
+      margin-top: 10px;
+      color: #38a169;
+      font-size: 13px;
+      font-weight: 900;
+    }
+
+    .copy-status.show {
+      display: block;
+      animation: resultIn 0.35s ease both;
+    }
+
+    @keyframes resultIn {
+      from {
+        opacity: 0;
+        transform: translateY(14px);
+      }
+
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    .proof-header {
+      display: flex;
+      justify-content: space-between;
+      gap: 18px;
+      align-items: flex-start;
+      margin-bottom: 22px;
+    }
+
+    .proof-header h2 {
+      font-size: 24px;
+    }
+
+    .score-box {
+      min-width: 92px;
+      padding: 12px;
+      border-radius: 8px;
+      background: #111;
+      color: #fff;
+      text-align: center;
+    }
+
+    .score-box strong {
+      display: block;
+      font-size: 26px;
+      line-height: 1;
+    }
+
+    .score-box span {
+      font-size: 11px;
+      color: #cbd5e1;
+    }
+
+    .proof-list {
+      display: grid;
+      gap: 13px;
+    }
+
+    .proof-item {
+      display: flex;
+      gap: 12px;
+      align-items: flex-start;
+      padding: 15px;
+      border: 1px solid #e5e9f0;
+      border-radius: 8px;
+      background: #ffffff;
+      cursor: pointer;
+      transition: border-color 0.2s ease, transform 0.2s ease;
+    }
+
+    .proof-item:hover {
+      border-color: #0077ff;
+      transform: translateY(-2px);
+    }
+
+    .proof-item input {
+      width: 18px;
+      height: 18px;
+      margin: 3px 0 0;
+      accent-color: #0077ff;
+      flex: 0 0 auto;
+    }
+
+    .proof-item strong {
+      display: block;
+      margin-bottom: 4px;
+      font-size: 14px;
+    }
+
+    .proof-item span {
+      color: #555;
+      font-size: 13px;
+      line-height: 1.7;
+    }
+
+    .meter {
+      height: 10px;
+      margin-top: 22px;
+      border-radius: 999px;
+      background: #e8edf5;
+      overflow: hidden;
+    }
+
+    .meter span {
+      display: block;
+      width: 0;
+      height: 100%;
+      background: #38a169;
+      transition: width 0.35s ease;
+    }
+
+    .footer-note {
+      margin-top: 34px;
+      text-align: center;
+      color: #8792a3;
       font-size: 12px;
-      color: #666;
-      margin-top: 5px;
+    }
+
+    @media (max-width: 900px) {
+      .navbar {
+        padding: 16px 22px;
+      }
+
+      main {
+        width: min(100% - 34px, 1120px);
+        padding-top: 112px;
+      }
+
+      .layout {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    @media (max-width: 560px) {
+      .proof-header {
+        flex-direction: column;
+      }
+
+      .score-box {
+        width: 100%;
+      }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      *,
+      *::before,
+      *::after {
+        animation: none !important;
+        transition: none !important;
+      }
+
+      .page-header,
+      .verify-panel,
+      .proof-panel {
+        opacity: 1;
+        transform: none;
+      }
     }
   </style>
 </head>
 
 <body>
+  <nav class="navbar">
+    <a class="logo" href="index.html">VERIFLY</a>
+    <a class="back-btn" href="ninsyo.html">← 選択へ戻る</a>
+  </nav>
 
-  <div class="box">
-    <h1>活動歴1年以上向け認証</h1>
+  <main>
+    <div class="page-header">
+      <span class="eyebrow">ESTABLISHED ARTIST VERIFICATION</span>
+      <h1>活動歴1年以上向け認証</h1>
+      <p class="lead">
+        1年以上の活動歴があるアーティスト向けの認証ルートです。
+        SNS本人確認に加えて、ライブ出演、過去リリース、共同制作者、制作ファイルなどの証跡を組み合わせ、
+        人間の創作活動に紐づいた楽曲であることを確認します。
+      </p>
+    </div>
 
-    <!-- SNS選択 -->
-    <select id="sns">
-      <option value="">SNSを選択</option>
-      <option value="x">X (Twitter)</option>
-      <option value="insta">Instagram</option>
-      <option value="youtube">YouTube</option>
-    </select>
+    <div class="layout">
+      <section class="verify-panel">
+        <h2 class="panel-title">SNS本人確認</h2>
+        <p class="panel-sub">
+          まずは本人が管理しているSNSアカウントを確認します。
+          生成されたコードをSNSに投稿することで、アカウント所有の証跡になります。
+        </p>
 
-    <!-- ID入力 -->
-    <input type="text" id="handle" placeholder="@username">
+        <label for="sns">SNSを選択</label>
+        <select id="sns">
+          <option value="">選択してください</option>
+          <option value="X">X (Twitter)</option>
+          <option value="Instagram">Instagram</option>
+          <option value="YouTube">YouTube</option>
+        </select>
 
-    <div class="hint">※ @から始まる形式のみ有効</div>
+        <label for="handle">アカウントID</label>
+        <input type="text" id="handle" placeholder="@username" />
 
-    <button onclick="generateOTP()">認証コード生成</button>
+        <div class="hint">※ @から始まる形式のみ有効です</div>
 
-    <div id="result"></div>
-  </div>
+        <button type="button" onclick="generateOTP()">認証コード生成</button>
+
+        <div id="result"></div>
+      </section>
+
+      <section class="proof-panel">
+        <div class="proof-header">
+          <div>
+            <h2>追加できる活動証跡</h2>
+            <p class="panel-sub">
+              提出できる項目を選ぶと、認証に使える証跡の充足度が表示されます。
+            </p>
+          </div>
+
+          <div class="score-box">
+            <strong id="score">0</strong>
+            <span>proof score</span>
+          </div>
+        </div>
+
+        <div class="proof-list">
+          <label class="proof-item">
+            <input type="checkbox" data-score="20" />
+            <span>
+              <strong>ライブ・出演履歴</strong>
+              ライブ告知、出演フライヤー、イベントページ、観客投稿など
+            </span>
+          </label>
+
+          <label class="proof-item">
+            <input type="checkbox" data-score="20" />
+            <span>
+              <strong>過去リリース履歴</strong>
+              配信リンク、CD、Bandcamp、SoundCloud、YouTube、レーベルページなど
+            </span>
+          </label>
+
+          <label class="proof-item">
+            <input type="checkbox" data-score="20" />
+            <span>
+              <strong>共同メンバー認証</strong>
+              バンドメンバー、客演、ミックス担当、プロデューサーなどの承認
+            </span>
+          </label>
+
+          <label class="proof-item">
+            <input type="checkbox" data-score="20" />
+            <span>
+              <strong>制作ファイル</strong>
+              DAWプロジェクト、ステム、録音素材、制作メモなど
+            </span>
+          </label>
+
+          <label class="proof-item">
+            <input type="checkbox" data-score="10" />
+            <span>
+              <strong>本人性の補強</strong>
+              公式Webサイト、配信者プロフィール、メールドメインなど
+            </span>
+          </label>
+
+          <label class="proof-item">
+            <input type="checkbox" data-score="10" />
+            <span>
+              <strong>アーカイブ証跡</strong>
+              過去記事、旧名義、クレジット、関係者証言など
+            </span>
+          </label>
+        </div>
+
+        <div class="meter">
+          <span id="meter"></span>
+        </div>
+      </section>
+    </div>
+
+    <div class="footer-note">
+      © 2026 Verifly
+    </div>
+  </main>
 
   <script>
+    window.addEventListener("load", () => {
+      document.body.classList.add("loaded");
+    });
+
     function generateOTP() {
       const sns = document.getElementById("sns").value;
-      const handle = document.getElementById("handle").value;
+      const handle = document.getElementById("handle").value.trim();
       const result = document.getElementById("result");
 
-      // SNS未選択
       if (!sns) {
         alert("SNSを選択してください");
         return;
       }
 
-      // @チェック
       if (!handle.startsWith("@")) {
         alert("@から始めてください");
         return;
       }
 
-      // OTP生成（11桁 英数混合）
+      if (handle.length < 2) {
+        alert("アカウントIDを入力してください");
+        return;
+      }
+
       const chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
       let otp = "";
+
       for (let i = 0; i < 11; i++) {
         otp += chars[Math.floor(Math.random() * chars.length)];
       }
 
       result.innerHTML = `
         <div class="otp-box" id="otpText">${otp}</div>
-        <button class="copy-btn" onclick="copyOTP()">コードをコピー</button>
-        <p style="margin-top:10px;">
-          このコードをあなたのSNSアカウント（${handle}）に投稿してください
+        <button class="copy-btn" type="button" onclick="copyOTP()">コードをコピー</button>
+        <p class="result-message">
+          このコードを ${sns} のアカウント（${handle}）に投稿してください。
+          投稿確認後、活動証跡と組み合わせて認証フローに進みます。
         </p>
+        <div class="copy-status" id="copyStatus">コピーしました</div>
       `;
     }
 
     function copyOTP() {
       const text = document.getElementById("otpText").innerText;
-      navigator.clipboard.writeText(text);
-      alert("コピーしました");
-    }
-  </script>
+      const status = document.getElementById("copyStatus");
 
+      navigator.clipboard.writeText(text).then(() => {
+        status.classList.add("show");
+
+        setTimeout(() => {
+          status.classList.remove("show");
+        }, 1800);
+      });
+    }
+
+    const proofChecks = document.querySelectorAll(".proof-item input");
+    const score = document.getElementById("score");
+    const meter = document.getElementById("meter");
+
+    function updateProofScore() {
+      let total = 0;
+
+      proofChecks.forEach((check) => {
+        if (check.checked) {
+          total += Number(check.dataset.score);
+        }
+      });
+
+      score.textContent = total;
+      meter.style.width = `${total}%`;
+    }
+
+    proofChecks.forEach((check) => {
+      check.addEventListener("change", updateProofScore);
+    });
+  </script>
 </body>
 </html>
