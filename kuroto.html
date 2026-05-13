@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Verifly - 活動歴1年以上向け認証</title>
+  <title>Verifly - 活動歴1年以上向け本人確認</title>
 
   <style>
     * {
@@ -24,7 +24,7 @@
 
     body.loaded .page-header,
     body.loaded .verify-panel,
-    body.loaded .proof-panel {
+    body.loaded .step-card {
       opacity: 1;
       transform: translateY(0);
     }
@@ -75,7 +75,7 @@
     }
 
     .page-header {
-      max-width: 780px;
+      max-width: 760px;
       margin-bottom: 34px;
       opacity: 0;
       transform: translateY(28px);
@@ -104,13 +104,13 @@
 
     .layout {
       display: grid;
-      grid-template-columns: 0.95fr 1.05fr;
+      grid-template-columns: 1fr 0.9fr;
       gap: 24px;
       align-items: start;
     }
 
-    .verify-panel,
-    .proof-panel {
+    .verify-panel {
+      padding: 30px;
       border: 1px solid #e5e9f0;
       border-radius: 8px;
       background: rgba(255, 255, 255, 0.78);
@@ -118,23 +118,12 @@
       opacity: 0;
       transform: translateY(34px);
       transition:
-        opacity 0.8s ease,
-        transform 0.8s ease,
+        opacity 0.8s ease 0.08s,
+        transform 0.8s ease 0.08s,
         box-shadow 0.25s ease;
     }
 
-    .verify-panel {
-      padding: 30px;
-      transition-delay: 0.08s;
-    }
-
-    .proof-panel {
-      padding: 28px;
-      transition-delay: 0.18s;
-    }
-
-    .verify-panel:hover,
-    .proof-panel:hover {
+    .verify-panel:hover {
       box-shadow: 0 28px 70px rgba(20, 30, 45, 0.13);
     }
 
@@ -197,7 +186,8 @@
       line-height: 1.7;
     }
 
-    button {
+    button,
+    .next-btn {
       width: 100%;
       padding: 15px;
       border: none;
@@ -207,10 +197,14 @@
       font-size: 15px;
       font-weight: 900;
       cursor: pointer;
+      text-decoration: none;
+      text-align: center;
+      display: inline-block;
       transition: transform 0.25s ease, background 0.25s ease, box-shadow 0.25s ease;
     }
 
-    button:hover {
+    button:hover,
+    .next-btn:hover {
       background: #222;
       transform: translateY(-2px);
       box-shadow: 0 14px 34px rgba(0, 0, 0, 0.16);
@@ -260,6 +254,16 @@
       animation: resultIn 0.35s ease both;
     }
 
+    .next-area {
+      display: none;
+      margin-top: 18px;
+      animation: resultIn 0.45s ease both;
+    }
+
+    .next-area.show {
+      display: block;
+    }
+
     @keyframes resultIn {
       from {
         opacity: 0;
@@ -272,94 +276,68 @@
       }
     }
 
-    .proof-header {
-      display: flex;
-      justify-content: space-between;
-      gap: 18px;
-      align-items: flex-start;
-      margin-bottom: 22px;
-    }
-
-    .proof-header h2 {
-      font-size: 24px;
-    }
-
-    .score-box {
-      min-width: 92px;
-      padding: 12px;
-      border-radius: 8px;
-      background: #111;
-      color: #fff;
-      text-align: center;
-    }
-
-    .score-box strong {
-      display: block;
-      font-size: 26px;
-      line-height: 1;
-    }
-
-    .score-box span {
-      font-size: 11px;
-      color: #cbd5e1;
-    }
-
-    .proof-list {
+    .steps {
       display: grid;
-      gap: 13px;
+      gap: 16px;
     }
 
-    .proof-item {
-      display: flex;
-      gap: 12px;
-      align-items: flex-start;
-      padding: 15px;
+    .step-card {
+      padding: 22px;
       border: 1px solid #e5e9f0;
       border-radius: 8px;
-      background: #ffffff;
-      cursor: pointer;
-      transition: border-color 0.2s ease, transform 0.2s ease;
+      background: rgba(255, 255, 255, 0.72);
+      opacity: 0;
+      transform: translateY(34px);
+      transition:
+        opacity 0.8s ease,
+        transform 0.8s ease,
+        border-color 0.25s ease;
     }
 
-    .proof-item:hover {
+    .step-card:nth-child(1) {
+      transition-delay: 0.16s;
+    }
+
+    .step-card:nth-child(2) {
+      transition-delay: 0.26s;
+    }
+
+    .step-card:nth-child(3) {
+      transition-delay: 0.36s;
+    }
+
+    .step-card:hover {
       border-color: #0077ff;
-      transform: translateY(-2px);
+      transform: translateY(-4px);
     }
 
-    .proof-item input {
-      width: 18px;
-      height: 18px;
-      margin: 3px 0 0;
-      accent-color: #0077ff;
-      flex: 0 0 auto;
-    }
-
-    .proof-item strong {
+    .step-card strong {
       display: block;
-      margin-bottom: 4px;
-      font-size: 14px;
+      color: #0077ff;
+      font-size: 12px;
+      margin-bottom: 10px;
     }
 
-    .proof-item span {
+    .step-card h2 {
+      font-size: 19px;
+      margin-bottom: 8px;
+    }
+
+    .step-card p {
       color: #555;
-      font-size: 13px;
-      line-height: 1.7;
+      font-size: 14px;
+      line-height: 1.8;
     }
 
-    .meter {
-      height: 10px;
-      margin-top: 22px;
-      border-radius: 999px;
-      background: #e8edf5;
-      overflow: hidden;
-    }
-
-    .meter span {
-      display: block;
-      width: 0;
-      height: 100%;
-      background: #38a169;
-      transition: width 0.35s ease;
+    .score-note {
+      margin-top: 18px;
+      padding: 18px;
+      border-left: 4px solid #38a169;
+      border-radius: 8px;
+      background: rgba(255, 255, 255, 0.76);
+      color: #465160;
+      font-size: 14px;
+      line-height: 1.8;
     }
 
     .footer-note {
@@ -369,7 +347,7 @@
       font-size: 12px;
     }
 
-    @media (max-width: 900px) {
+    @media (max-width: 860px) {
       .navbar {
         padding: 16px 22px;
       }
@@ -384,16 +362,6 @@
       }
     }
 
-    @media (max-width: 560px) {
-      .proof-header {
-        flex-direction: column;
-      }
-
-      .score-box {
-        width: 100%;
-      }
-    }
-
     @media (prefers-reduced-motion: reduce) {
       *,
       *::before,
@@ -404,7 +372,7 @@
 
       .page-header,
       .verify-panel,
-      .proof-panel {
+      .step-card {
         opacity: 1;
         transform: none;
       }
@@ -420,12 +388,12 @@
 
   <main>
     <div class="page-header">
-      <span class="eyebrow">ESTABLISHED ARTIST VERIFICATION</span>
-      <h1>活動歴1年以上向け認証</h1>
+      <span class="eyebrow">IDENTITY VERIFICATION</span>
+      <h1>活動歴1年以上向け本人確認</h1>
       <p class="lead">
-        1年以上の活動歴があるアーティスト向けの認証ルートです。
-        SNS本人確認に加えて、ライブ出演、過去リリース、共同制作者、制作ファイルなどの証跡を組み合わせ、
-        人間の創作活動に紐づいた楽曲であることを確認します。
+        まずは本人が管理しているSNSアカウントを確認します。
+        本人確認が完了したあと、次のページでアーティストの活動形態を選択し、
+        その形態に合った証跡提出へ進みます。
       </p>
     </div>
 
@@ -433,8 +401,8 @@
       <section class="verify-panel">
         <h2 class="panel-title">SNS本人確認</h2>
         <p class="panel-sub">
-          まずは本人が管理しているSNSアカウントを確認します。
-          生成されたコードをSNSに投稿することで、アカウント所有の証跡になります。
+          使用しているSNSを選択し、@から始まるアカウントIDを入力してください。
+          生成されたコードをSNSに投稿することで、本人確認の証跡になります。
         </p>
 
         <label for="sns">SNSを選択</label>
@@ -453,77 +421,36 @@
         <button type="button" onclick="generateOTP()">認証コード生成</button>
 
         <div id="result"></div>
-      </section>
 
-      <section class="proof-panel">
-        <div class="proof-header">
-          <div>
-            <h2>追加できる活動証跡</h2>
-            <p class="panel-sub">
-              提出できる項目を選ぶと、認証に使える証跡の充足度が表示されます。
-            </p>
-          </div>
-
-          <div class="score-box">
-            <strong id="score">0</strong>
-            <span>proof score</span>
-          </div>
-        </div>
-
-        <div class="proof-list">
-          <label class="proof-item">
-            <input type="checkbox" data-score="20" />
-            <span>
-              <strong>ライブ・出演履歴</strong>
-              ライブ告知、出演フライヤー、イベントページ、観客投稿など
-            </span>
-          </label>
-
-          <label class="proof-item">
-            <input type="checkbox" data-score="20" />
-            <span>
-              <strong>過去リリース履歴</strong>
-              配信リンク、CD、Bandcamp、SoundCloud、YouTube、レーベルページなど
-            </span>
-          </label>
-
-          <label class="proof-item">
-            <input type="checkbox" data-score="20" />
-            <span>
-              <strong>共同メンバー認証</strong>
-              バンドメンバー、客演、ミックス担当、プロデューサーなどの承認
-            </span>
-          </label>
-
-          <label class="proof-item">
-            <input type="checkbox" data-score="20" />
-            <span>
-              <strong>制作ファイル</strong>
-              DAWプロジェクト、ステム、録音素材、制作メモなど
-            </span>
-          </label>
-
-          <label class="proof-item">
-            <input type="checkbox" data-score="10" />
-            <span>
-              <strong>本人性の補強</strong>
-              公式Webサイト、配信者プロフィール、メールドメインなど
-            </span>
-          </label>
-
-          <label class="proof-item">
-            <input type="checkbox" data-score="10" />
-            <span>
-              <strong>アーカイブ証跡</strong>
-              過去記事、旧名義、クレジット、関係者証言など
-            </span>
-          </label>
-        </div>
-
-        <div class="meter">
-          <span id="meter"></span>
+        <div class="next-area" id="nextArea">
+          <a class="next-btn" href="artist-type.html">本人確認後、活動形態を選択する</a>
         </div>
       </section>
+
+      <div class="steps">
+        <div class="step-card">
+          <strong>STEP 01</strong>
+          <h2>SNS本人確認</h2>
+          <p>本人が管理しているSNSアカウントに、一時コードを投稿して確認します。</p>
+        </div>
+
+        <div class="step-card">
+          <strong>STEP 02</strong>
+          <h2>活動形態の選択</h2>
+          <p>ボカロP、バンド、EDM系、過去活動アーティストなどから近い形態を選択します。</p>
+        </div>
+
+        <div class="step-card">
+          <strong>STEP 03</strong>
+          <h2>証跡提出</h2>
+          <p>選択した活動形態に応じて、提出できる証跡の選択肢が変わります。</p>
+        </div>
+
+        <div class="score-note">
+          次の証跡提出では、提出できる項目を1つ選ぶごとに1点として扱います。
+          合計2点以上でHuman-made認証の提出条件を満たす設計です。
+        </div>
+      </div>
     </div>
 
     <div class="footer-note">
@@ -540,6 +467,7 @@
       const sns = document.getElementById("sns").value;
       const handle = document.getElementById("handle").value.trim();
       const result = document.getElementById("result");
+      const nextArea = document.getElementById("nextArea");
 
       if (!sns) {
         alert("SNSを選択してください");
@@ -568,10 +496,12 @@
         <button class="copy-btn" type="button" onclick="copyOTP()">コードをコピー</button>
         <p class="result-message">
           このコードを ${sns} のアカウント（${handle}）に投稿してください。
-          投稿確認後、活動証跡と組み合わせて認証フローに進みます。
+          投稿後、本人確認が完了したものとして次の活動形態選択へ進めます。
         </p>
         <div class="copy-status" id="copyStatus">コピーしました</div>
       `;
+
+      nextArea.classList.add("show");
     }
 
     function copyOTP() {
@@ -586,27 +516,6 @@
         }, 1800);
       });
     }
-
-    const proofChecks = document.querySelectorAll(".proof-item input");
-    const score = document.getElementById("score");
-    const meter = document.getElementById("meter");
-
-    function updateProofScore() {
-      let total = 0;
-
-      proofChecks.forEach((check) => {
-        if (check.checked) {
-          total += Number(check.dataset.score);
-        }
-      });
-
-      score.textContent = total;
-      meter.style.width = `${total}%`;
-    }
-
-    proofChecks.forEach((check) => {
-      check.addEventListener("change", updateProofScore);
-    });
   </script>
 </body>
 </html>
