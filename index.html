@@ -1,6 +1,4 @@
-もちろんです。これを `index.html` に丸ごと貼り替えてください。
 
-```html
 <!DOCTYPE html>
 <html lang="ja">
 <head>
@@ -29,7 +27,7 @@
     body.loaded .hero h1,
     body.loaded .hero .verify-btn,
     body.loaded .hero p,
-    body.loaded .visual-box {
+    body.loaded .logo-box {
       opacity: 1;
       transform: translateY(0);
     }
@@ -136,75 +134,45 @@
       box-shadow: 0 16px 36px rgba(0, 0, 0, 0.18);
     }
 
-    .visual-box {
+    .logo-box {
       min-height: 330px;
       border: 1px solid #e5e9f0;
       border-radius: 8px;
-      background: rgba(255, 255, 255, 0.78);
+      background: rgba(255, 255, 255, 0.72);
       box-shadow: 0 22px 60px rgba(20, 30, 45, 0.1);
-      padding: 28px;
+      padding: 34px;
       opacity: 0;
       transform: translateY(34px);
-      transition: opacity 0.9s ease 0.35s, transform 0.9s ease 0.35s;
-    }
-
-    .wave {
-      height: 170px;
+      transition:
+        opacity 0.9s ease 0.35s,
+        transform 0.9s ease 0.35s,
+        box-shadow 0.25s ease;
       display: flex;
       align-items: center;
-      gap: 8px;
+      justify-content: center;
       overflow: hidden;
-      border-bottom: 1px solid #e8edf5;
-      margin-bottom: 24px;
     }
 
-    .wave span {
-      width: 9px;
-      min-width: 9px;
-      border-radius: 999px;
-      background: #0077ff;
-      animation: waveMove 2.8s ease-in-out infinite;
-      animation-delay: calc(var(--i) * -0.12s);
+    .logo-box:hover {
+      box-shadow: 0 28px 70px rgba(20, 30, 45, 0.14);
     }
 
-    .wave span:nth-child(3n) {
-      background: #111;
+    .logo-box img {
+      width: min(82%, 430px);
+      height: auto;
+      display: block;
+      filter: drop-shadow(0 18px 30px rgba(0, 0, 0, 0.14));
+      animation: logoFloat 5.5s ease-in-out infinite;
     }
 
-    .wave span:nth-child(4n) {
-      background: #38a169;
-    }
-
-    @keyframes waveMove {
+    @keyframes logoFloat {
       0%, 100% {
-        transform: scaleY(0.45);
+        transform: translateY(0) scale(1);
       }
 
       50% {
-        transform: scaleY(1);
+        transform: translateY(-10px) scale(1.025);
       }
-    }
-
-    .signal {
-      display: flex;
-      justify-content: space-between;
-      gap: 18px;
-      padding: 13px 0;
-      border-bottom: 1px solid #edf0f4;
-      font-size: 14px;
-    }
-
-    .signal:last-child {
-      border-bottom: 0;
-    }
-
-    .signal strong {
-      color: #111;
-    }
-
-    .signal span {
-      color: #666;
-      text-align: right;
     }
 
     section {
@@ -364,8 +332,12 @@
         padding: 110px 8vw 70px;
       }
 
-      .visual-box {
+      .logo-box {
         min-height: 280px;
+      }
+
+      .logo-box img {
+        width: min(76%, 360px);
       }
 
       section {
@@ -402,13 +374,12 @@
         font-size: 46px;
       }
 
-      .signal {
-        flex-direction: column;
-        gap: 4px;
+      .logo-box {
+        padding: 24px;
       }
 
-      .signal span {
-        text-align: left;
+      .logo-box img {
+        width: min(88%, 300px);
       }
     }
 
@@ -428,7 +399,7 @@
       .hero h1,
       .hero p,
       .verify-btn,
-      .visual-box {
+      .logo-box {
         opacity: 1;
         transform: none;
       }
@@ -454,42 +425,8 @@
       <a class="verify-btn" href="ninsyo.html">認証を行う</a>
     </div>
 
-    <div class="visual-box">
-      <div class="wave">
-        <span style="--i:1; height:42px"></span>
-        <span style="--i:2; height:88px"></span>
-        <span style="--i:3; height:62px"></span>
-        <span style="--i:4; height:128px"></span>
-        <span style="--i:5; height:74px"></span>
-        <span style="--i:6; height:112px"></span>
-        <span style="--i:7; height:52px"></span>
-        <span style="--i:8; height:146px"></span>
-        <span style="--i:9; height:82px"></span>
-        <span style="--i:10; height:104px"></span>
-        <span style="--i:11; height:48px"></span>
-        <span style="--i:12; height:132px"></span>
-        <span style="--i:13; height:68px"></span>
-        <span style="--i:14; height:118px"></span>
-        <span style="--i:15; height:58px"></span>
-        <span style="--i:16; height:96px"></span>
-      </div>
-
-      <div class="signal">
-        <strong>Creator proof</strong>
-        <span>profile / history</span>
-      </div>
-      <div class="signal">
-        <strong>Collaboration proof</strong>
-        <span>mutual approval</span>
-      </div>
-      <div class="signal">
-        <strong>Work proof</strong>
-        <span>project files / stems</span>
-      </div>
-      <div class="signal">
-        <strong>Activity proof</strong>
-        <span>live / release archive</span>
-      </div>
+    <div class="logo-box">
+      <img src="タイトル (6).png" alt="Verifly logo" />
     </div>
   </div>
 
@@ -588,15 +525,15 @@
       observer.observe(section);
     });
 
-    const visualBox = document.querySelector(".visual-box");
+    const logoBox = document.querySelector(".logo-box");
 
     window.addEventListener("mousemove", (event) => {
-      if (!visualBox) return;
+      if (!logoBox) return;
 
       const x = (event.clientX / window.innerWidth - 0.5) * 12;
       const y = (event.clientY / window.innerHeight - 0.5) * 12;
 
-      visualBox.style.transform = `translate(${x}px, ${y}px)`;
+      logoBox.style.transform = `translate(${x}px, ${y}px)`;
     });
 
     function smoothScrollTo(targetY, duration = 900) {
