@@ -2,7 +2,7 @@
 <html lang="ja">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Verifly</title>
 
   <style>
@@ -10,7 +10,7 @@
       margin: 0;
       padding: 0;
       box-sizing: border-box;
-      font-family: Arial, sans-serif;
+      font-family: Arial, "Hiragino Kaku Gothic ProN", "Yu Gothic", sans-serif;
     }
 
     html {
@@ -20,83 +20,191 @@
     body {
       background: #ffffff;
       color: #111;
+      overflow-x: hidden;
     }
 
-    /* ===== ナビ ===== */
+    body.loaded .hero h1,
+    body.loaded .hero .verify-btn,
+    body.loaded .hero p,
+    body.loaded .visual-box {
+      opacity: 1;
+      transform: translateY(0);
+    }
+
     .navbar {
       position: fixed;
       top: 0;
       width: 100%;
       display: flex;
       justify-content: center;
-      gap: 40px;
-      padding: 20px;
-      background: rgba(255,255,255,0.85);
-      backdrop-filter: blur(10px);
-      border-bottom: 1px solid #eee;
+      gap: 38px;
+      padding: 18px 20px;
+      background: rgba(255, 255, 255, 0.82);
+      backdrop-filter: blur(14px);
+      border-bottom: 1px solid rgba(0, 0, 0, 0.07);
       z-index: 1000;
     }
 
     .navbar a {
+      position: relative;
       color: #111;
       text-decoration: none;
-      font-weight: bold;
-      transition: 0.2s;
+      font-size: 13px;
+      font-weight: 800;
+      transition: color 0.25s ease;
     }
 
-    .navbar a:hover {
+    .navbar a::after {
+      content: "";
+      position: absolute;
+      left: 0;
+      bottom: -7px;
+      width: 100%;
+      height: 2px;
+      background: #0077ff;
+      transform: scaleX(0);
+      transform-origin: right;
+      transition: transform 0.25s ease;
+    }
+
+    .navbar a:hover,
+    .navbar a.active {
       color: #0077ff;
     }
 
-    /* ===== ヒーロー ===== */
+    .navbar a:hover::after,
+    .navbar a.active::after {
+      transform: scaleX(1);
+      transform-origin: left;
+    }
+
     .hero {
-      height: 100vh;
-      display: flex;
-      justify-content: center;
+      min-height: 100vh;
+      display: grid;
+      grid-template-columns: 1.05fr 0.95fr;
       align-items: center;
-      flex-direction: column;
-      text-align: center;
-      background: linear-gradient(to bottom, #ffffff, #f6f7fb);
+      gap: 46px;
+      padding: 110px 9vw 60px;
+      background:
+        radial-gradient(circle at 18% 20%, rgba(0, 119, 255, 0.12), transparent 32%),
+        linear-gradient(to bottom, #ffffff, #f5f7fb);
     }
 
     .hero h1 {
-      font-size: 64px;
-      letter-spacing: 2px;
+      font-size: clamp(52px, 8vw, 96px);
+      line-height: 0.95;
+      opacity: 0;
+      transform: translateY(28px);
+      transition: opacity 0.9s ease, transform 0.9s ease;
     }
 
     .hero p {
-      margin-top: 20px;
-      color: #555;
+      margin-top: 24px;
+      max-width: 590px;
+      color: #444;
       font-size: 16px;
+      line-height: 1.9;
+      opacity: 0;
+      transform: translateY(28px);
+      transition: opacity 0.9s ease 0.2s, transform 0.9s ease 0.2s;
     }
 
-    /* ===== ボタン ===== */
     .verify-btn {
-      margin-top: 30px;
-      padding: 14px 28px;
+      margin-top: 34px;
+      padding: 15px 30px;
       background: #000;
       color: #fff;
       text-decoration: none;
-      font-weight: bold;
+      font-weight: 800;
       border-radius: 8px;
-      transition: 0.2s;
+      transition: transform 0.25s ease, background 0.25s ease, box-shadow 0.25s ease;
       display: inline-block;
+      opacity: 0;
+      transform: translateY(28px);
     }
 
     .verify-btn:hover {
-      background: #333;
-      transform: scale(1.05);
+      background: #222;
+      transform: translateY(-3px);
+      box-shadow: 0 16px 36px rgba(0, 0, 0, 0.18);
     }
 
-    /* ===== セクション ===== */
-    section {
-      padding: 120px 20%;
-      min-height: 100vh;
-
-      /* アニメ初期状態 */
+    .visual-box {
+      min-height: 330px;
+      border: 1px solid #e5e9f0;
+      border-radius: 8px;
+      background: rgba(255, 255, 255, 0.78);
+      box-shadow: 0 22px 60px rgba(20, 30, 45, 0.1);
+      padding: 28px;
       opacity: 0;
-      transform: translateY(40px);
-      transition: all 0.8s ease;
+      transform: translateY(34px);
+      transition: opacity 0.9s ease 0.35s, transform 0.9s ease 0.35s;
+    }
+
+    .wave {
+      height: 170px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      overflow: hidden;
+      border-bottom: 1px solid #e8edf5;
+      margin-bottom: 24px;
+    }
+
+    .wave span {
+      width: 9px;
+      min-width: 9px;
+      border-radius: 999px;
+      background: #0077ff;
+      animation: waveMove 2.8s ease-in-out infinite;
+      animation-delay: calc(var(--i) * -0.12s);
+    }
+
+    .wave span:nth-child(3n) {
+      background: #111;
+    }
+
+    .wave span:nth-child(4n) {
+      background: #38a169;
+    }
+
+    @keyframes waveMove {
+      0%, 100% {
+        transform: scaleY(0.45);
+      }
+      50% {
+        transform: scaleY(1);
+      }
+    }
+
+    .signal {
+      display: flex;
+      justify-content: space-between;
+      gap: 18px;
+      padding: 13px 0;
+      border-bottom: 1px solid #edf0f4;
+      font-size: 14px;
+    }
+
+    .signal:last-child {
+      border-bottom: 0;
+    }
+
+    .signal strong {
+      color: #111;
+    }
+
+    .signal span {
+      color: #666;
+      text-align: right;
+    }
+
+    section {
+      padding: 120px 18%;
+      min-height: 100vh;
+      opacity: 0;
+      transform: translateY(46px);
+      transition: opacity 0.85s ease, transform 0.85s ease;
     }
 
     section.show {
@@ -105,13 +213,13 @@
     }
 
     h2 {
-      font-size: 36px;
-      margin-bottom: 20px;
+      font-size: clamp(32px, 4vw, 48px);
+      margin-bottom: 22px;
       color: #0077ff;
     }
 
     p {
-      line-height: 1.8;
+      line-height: 1.9;
       color: #333;
       font-size: 16px;
     }
@@ -119,100 +227,269 @@
     .divider {
       height: 1px;
       background: #eee;
-      margin: 60px 0;
+      margin: 54px 0;
+      transform: scaleX(0);
+      transform-origin: left;
+      transition: transform 0.9s ease 0.15s;
     }
 
-    /* スマホ対応（軽く） */
-    @media (max-width: 768px) {
+    section.show .divider {
+      transform: scaleX(1);
+    }
+
+    .mini-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 18px;
+      margin-top: 34px;
+    }
+
+    .mini-card {
+      padding: 22px;
+      border: 1px solid #e6eaf1;
+      border-radius: 8px;
+      background: #fff;
+      transform: translateY(18px);
+      opacity: 0;
+      transition: opacity 0.55s ease, transform 0.55s ease, border-color 0.25s ease;
+    }
+
+    section.show .mini-card {
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    section.show .mini-card:nth-child(2) {
+      transition-delay: 0.12s;
+    }
+
+    section.show .mini-card:nth-child(3) {
+      transition-delay: 0.24s;
+    }
+
+    .mini-card:hover {
+      border-color: #0077ff;
+      transform: translateY(-4px);
+    }
+
+    .mini-card h3 {
+      font-size: 17px;
+      margin-bottom: 10px;
+    }
+
+    .mini-card p {
+      font-size: 14px;
+      color: #555;
+    }
+
+    @media (max-width: 900px) {
+      .hero {
+        grid-template-columns: 1fr;
+        padding: 110px 8vw 70px;
+      }
+
+      .visual-box {
+        min-height: 280px;
+      }
+
       section {
-        padding: 80px 10%;
+        padding: 90px 10%;
+      }
+
+      .mini-grid {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    @media (max-width: 600px) {
+      .navbar {
+        gap: 18px;
+        justify-content: flex-start;
+        overflow-x: auto;
       }
 
       .hero h1 {
-        font-size: 40px;
+        font-size: 46px;
       }
 
-      .navbar {
-        gap: 20px;
-        font-size: 14px;
+      .signal {
+        flex-direction: column;
+        gap: 4px;
+      }
+
+      .signal span {
+        text-align: left;
       }
     }
 
+    @media (prefers-reduced-motion: reduce) {
+      html {
+        scroll-behavior: auto;
+      }
+
+      *,
+      *::before,
+      *::after {
+        animation: none !important;
+        transition: none !important;
+      }
+
+      section,
+      .hero h1,
+      .hero p,
+      .verify-btn,
+      .visual-box {
+        opacity: 1;
+        transform: none;
+      }
+    }
   </style>
 </head>
 
 <body>
-
-  <!-- ナビ -->
   <div class="navbar">
     <a href="#feature">FEATURE</a>
     <a href="#why">WHY VERIFLY</a>
     <a href="#purpose">PURPOSE</a>
   </div>
 
-  <!-- ヒーロー -->
   <div class="hero">
-    <h1>VERIFLY</h1>
-    <a class="verify-btn" href="ninsyo.html">認証を行う</a>
-    <p>Human-made music verification layer for the AI era</p>
+    <div>
+      <h1>VERIFLY</h1>
+      <p>
+        AI時代の音楽に、人間が作ったことの証跡を残す。
+        Veriflyは、作曲者・演奏者・共同制作者・活動履歴をもとに、
+        楽曲へ信頼のデジタルラベルを付与する認証レイヤーです。
+      </p>
+      <a class="verify-btn" href="ninsyo.html">認証を行う</a>
+    </div>
+
+    <div class="visual-box">
+      <div class="wave">
+        <span style="--i:1; height:42px"></span>
+        <span style="--i:2; height:88px"></span>
+        <span style="--i:3; height:62px"></span>
+        <span style="--i:4; height:128px"></span>
+        <span style="--i:5; height:74px"></span>
+        <span style="--i:6; height:112px"></span>
+        <span style="--i:7; height:52px"></span>
+        <span style="--i:8; height:146px"></span>
+        <span style="--i:9; height:82px"></span>
+        <span style="--i:10; height:104px"></span>
+        <span style="--i:11; height:48px"></span>
+        <span style="--i:12; height:132px"></span>
+        <span style="--i:13; height:68px"></span>
+        <span style="--i:14; height:118px"></span>
+        <span style="--i:15; height:58px"></span>
+        <span style="--i:16; height:96px"></span>
+      </div>
+
+      <div class="signal">
+        <strong>Creator proof</strong>
+        <span>profile / history</span>
+      </div>
+      <div class="signal">
+        <strong>Collaboration proof</strong>
+        <span>mutual approval</span>
+      </div>
+      <div class="signal">
+        <strong>Work proof</strong>
+        <span>project files / stems</span>
+      </div>
+      <div class="signal">
+        <strong>Activity proof</strong>
+        <span>live / release archive</span>
+      </div>
+    </div>
   </div>
 
-  <!-- FEATURE -->
   <section id="feature">
     <h2>FEATURE</h2>
     <p>
-      Verifly provides a verification system that identifies whether music is created by humans or AI-assisted.
-      We analyze production metadata, stems, creation history, and social proof to generate a credibility score.
+      Veriflyは、AI楽曲を一方的に検出するサービスではありません。
+      人間の制作活動に紐づく証拠を複数のルートから集め、
+      楽曲やアーティストに認証ラベルを付与します。
     </p>
-    <div class="divider"></div>
-    <p>
-      Artists can register their works and receive a verification badge that can be embedded across platforms.
-    </p>
+
+    <div class="mini-grid">
+      <div class="mini-card">
+        <h3>活動履歴</h3>
+        <p>ライブ、リリース、SNS投稿、過去作品、メディア掲載などを確認します。</p>
+      </div>
+      <div class="mini-card">
+        <h3>共同認証</h3>
+        <p>バンドメンバー、プロデューサー、エンジニアなどの相互認証を扱います。</p>
+      </div>
+      <div class="mini-card">
+        <h3>制作証跡</h3>
+        <p>DAWプロジェクト、ステム、録音過程、制作メモなどを確認します。</p>
+      </div>
+    </div>
   </section>
 
-  <!-- WHY -->
   <section id="why">
     <h2>WHY VERIFLY</h2>
     <p>
-      In a world where AI-generated music becomes indistinguishable from human creation,
-      trust becomes the most important layer in music consumption.
+      AI生成音楽が自然に流通するほど、リスナーは
+      「誰が、どのように作った音楽なのか」を見分けにくくなります。
+      だからこそ、プラットフォーム上に透明性を示すラベルが必要になります。
     </p>
     <div class="divider"></div>
     <p>
-      Verifly restores transparency by clearly signaling human creativity.
+      VeriflyはAIを否定するためではなく、人間の創作物を
+      人間の創作物として扱うための仕組みです。
     </p>
   </section>
 
-  <!-- PURPOSE -->
   <section id="purpose">
     <h2>PURPOSE</h2>
     <p>
-      We aim not to reject AI, but to preserve the identity and value of human creators.
-    </p>
-    <div class="divider"></div>
-    <p>
-      Verifly becomes a global standard for music authenticity.
+      Veriflyは、Spotify、YouTube、Discordのような既存プラットフォームに
+      組み込める音楽真正性のインフラを目指します。
+      新しいSNSを作るのではなく、すでに音楽が消費されている場所へ
+      信頼のレイヤーを提供します。
     </p>
   </section>
 
-  <!-- スクロールアニメJS -->
   <script>
+    window.addEventListener("load", () => {
+      document.body.classList.add("loaded");
+    });
+
     const sections = document.querySelectorAll("section");
+    const navLinks = document.querySelectorAll(".navbar a");
 
     const observer = new IntersectionObserver((entries) => {
-      entries.forEach(entry => {
+      entries.forEach((entry) => {
         if (entry.isIntersecting) {
           entry.target.classList.add("show");
+
+          navLinks.forEach((link) => {
+            link.classList.toggle(
+              "active",
+              link.getAttribute("href") === `#${entry.target.id}`
+            );
+          });
         }
       });
     }, {
-      threshold: 0.2
+      threshold: 0.35
     });
 
-    sections.forEach(section => {
+    sections.forEach((section) => {
       observer.observe(section);
     });
-  </script>
 
+    const visualBox = document.querySelector(".visual-box");
+
+    window.addEventListener("mousemove", (event) => {
+      if (!visualBox) return;
+
+      const x = (event.clientX / window.innerWidth - 0.5) * 12;
+      const y = (event.clientY / window.innerHeight - 0.5) * 12;
+
+      visualBox.style.transform = `translate(${x}px, ${y}px)`;
+    });
+  </script>
 </body>
 </html>
