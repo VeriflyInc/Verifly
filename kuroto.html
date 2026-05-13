@@ -4,344 +4,27 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Verifly - ISRC認証開始</title>
-
   <style>
-    * {
-      margin: 0;
-      padding: 0;
-      box-sizing: border-box;
-      font-family: Arial, "Hiragino Kaku Gothic ProN", "Yu Gothic", sans-serif;
-    }
-
-    body {
-      min-height: 100vh;
-      background:
-        radial-gradient(circle at 18% 20%, rgba(0, 119, 255, 0.12), transparent 32%),
-        linear-gradient(to bottom, #ffffff, #f5f7fb);
-      color: #111;
-      overflow-x: hidden;
-    }
-
-    body.loaded .page-header,
-    body.loaded .verify-panel,
-    body.loaded .step-card {
-      opacity: 1;
-      transform: translateY(0);
-    }
-
-    .navbar {
-      position: fixed;
-      top: 0;
-      width: 100%;
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      padding: 18px 9vw;
-      background: rgba(255, 255, 255, 0.82);
-      backdrop-filter: blur(14px);
-      border-bottom: 1px solid rgba(0, 0, 0, 0.07);
-      z-index: 1000;
-    }
-
-    .logo {
-      color: #111;
-      text-decoration: none;
-      font-size: 18px;
-      font-weight: 900;
-    }
-
-    .back-btn {
-      color: #111;
-      text-decoration: none;
-      font-size: 13px;
-      font-weight: 800;
-      padding: 10px 14px;
-      border: 1px solid #e5e9f0;
-      border-radius: 8px;
-      background: rgba(255, 255, 255, 0.76);
-      transition: transform 0.25s ease, border-color 0.25s ease, color 0.25s ease;
-    }
-
-    .back-btn:hover {
-      color: #0077ff;
-      border-color: #0077ff;
-      transform: translateY(-2px);
-    }
-
-    main {
-      width: min(1120px, calc(100% - 40px));
-      margin: 0 auto;
-      padding: 130px 0 70px;
-    }
-
-    .page-header {
-      max-width: 790px;
-      margin-bottom: 34px;
-      opacity: 0;
-      transform: translateY(28px);
-      transition: opacity 0.8s ease, transform 0.8s ease;
-    }
-
-    .eyebrow {
-      display: inline-block;
-      margin-bottom: 14px;
-      color: #0077ff;
-      font-size: 13px;
-      font-weight: 900;
-    }
-
-    h1 {
-      font-size: clamp(34px, 5vw, 56px);
-      line-height: 1.15;
-      margin-bottom: 18px;
-    }
-
-    .lead {
-      color: #444;
-      font-size: 16px;
-      line-height: 1.9;
-    }
-
-    .layout {
-      display: grid;
-      grid-template-columns: 1fr 0.9fr;
-      gap: 24px;
-      align-items: start;
-    }
-
-    .verify-panel {
-      padding: 30px;
-      border: 1px solid #e5e9f0;
-      border-radius: 8px;
-      background: rgba(255, 255, 255, 0.78);
-      box-shadow: 0 22px 60px rgba(20, 30, 45, 0.08);
-      opacity: 0;
-      transform: translateY(34px);
-      transition:
-        opacity 0.8s ease 0.08s,
-        transform 0.8s ease 0.08s,
-        box-shadow 0.25s ease;
-    }
-
-    .verify-panel:hover {
-      box-shadow: 0 28px 70px rgba(20, 30, 45, 0.13);
-    }
-
-    .panel-title {
-      font-size: 24px;
-      margin-bottom: 10px;
-    }
-
-    .panel-sub {
-      color: #555;
-      font-size: 14px;
-      line-height: 1.8;
-      margin-bottom: 24px;
-    }
-
-    label {
-      display: block;
-      margin-bottom: 8px;
-      color: #222;
-      font-size: 13px;
-      font-weight: 900;
-    }
-
-    input,
-    select {
-      width: 100%;
-      padding: 14px 14px;
-      margin-bottom: 16px;
-      border: 1px solid #dfe5ee;
-      border-radius: 8px;
-      background-color: #ffffff;
-      color: #111111;
-      font-size: 15px;
-      outline: none;
-      color-scheme: light;
-      transition: border-color 0.2s ease, box-shadow 0.2s ease;
-    }
-
-    select {
-      appearance: auto;
-      -webkit-appearance: menulist;
-    }
-
-    select option {
-      background-color: #ffffff;
-      color: #111111;
-    }
-
-    input:focus,
-    select:focus {
-      border-color: #0077ff;
-      box-shadow: 0 0 0 4px rgba(0, 119, 255, 0.12);
-    }
-
-    .hint {
-      margin-top: -8px;
-      margin-bottom: 18px;
-      color: #6b7280;
-      font-size: 12px;
-      line-height: 1.7;
-    }
-
-    button {
-      width: 100%;
-      padding: 15px;
-      border: none;
-      border-radius: 8px;
-      background: #111;
-      color: #fff;
-      font-size: 15px;
-      font-weight: 900;
-      cursor: pointer;
-      transition: transform 0.25s ease, background 0.25s ease, box-shadow 0.25s ease;
-    }
-
-    button:hover {
-      background: #222;
-      transform: translateY(-2px);
-      box-shadow: 0 14px 34px rgba(0, 0, 0, 0.16);
-    }
-
-    .error-message {
-      display: none;
-      margin-top: 14px;
-      padding: 14px;
-      border-radius: 8px;
-      background: #fff1f2;
-      color: #be123c;
-      font-size: 13px;
-      font-weight: 800;
-      line-height: 1.7;
-    }
-
-    .error-message.show {
-      display: block;
-      animation: resultIn 0.35s ease both;
-    }
-
-    @keyframes resultIn {
-      from {
-        opacity: 0;
-        transform: translateY(12px);
-      }
-
-      to {
-        opacity: 1;
-        transform: translateY(0);
-      }
-    }
-
-    .steps {
-      display: grid;
-      gap: 16px;
-    }
-
-    .step-card {
-      padding: 22px;
-      border: 1px solid #e5e9f0;
-      border-radius: 8px;
-      background: rgba(255, 255, 255, 0.72);
-      opacity: 0;
-      transform: translateY(34px);
-      transition:
-        opacity 0.8s ease,
-        transform 0.8s ease,
-        border-color 0.25s ease;
-    }
-
-    .step-card:nth-child(1) {
-      transition-delay: 0.16s;
-    }
-
-    .step-card:nth-child(2) {
-      transition-delay: 0.26s;
-    }
-
-    .step-card:nth-child(3) {
-      transition-delay: 0.36s;
-    }
-
-    .step-card:nth-child(4) {
-      transition-delay: 0.46s;
-    }
-
-    .step-card:hover {
-      border-color: #0077ff;
-      transform: translateY(-4px);
-    }
-
-    .step-card strong {
-      display: block;
-      color: #0077ff;
-      font-size: 12px;
-      margin-bottom: 10px;
-    }
-
-    .step-card h2 {
-      font-size: 19px;
-      margin-bottom: 8px;
-    }
-
-    .step-card p {
-      color: #555;
-      font-size: 14px;
-      line-height: 1.8;
-    }
-
-    .score-note {
-      margin-top: 18px;
-      padding: 18px;
-      border-left: 4px solid #38a169;
-      border-radius: 8px;
-      background: rgba(255, 255, 255, 0.76);
-      color: #465160;
-      font-size: 14px;
-      line-height: 1.8;
-    }
-
-    .footer-note {
-      margin-top: 34px;
-      text-align: center;
-      color: #8792a3;
-      font-size: 12px;
-    }
-
-    @media (max-width: 860px) {
-      .navbar {
-        padding: 16px 22px;
-      }
-
-      main {
-        width: min(100% - 34px, 1120px);
-        padding-top: 112px;
-      }
-
-      .layout {
-        grid-template-columns: 1fr;
-      }
-    }
-
-    @media (prefers-reduced-motion: reduce) {
-      *,
-      *::before,
-      *::after {
-        animation: none !important;
-        transition: none !important;
-      }
-
-      .page-header,
-      .verify-panel,
-      .step-card {
-        opacity: 1;
-        transform: none;
-      }
-    }
+    *{margin:0;padding:0;box-sizing:border-box;font-family:Arial,"Hiragino Kaku Gothic ProN","Yu Gothic",sans-serif}
+    body{min-height:100vh;background:radial-gradient(circle at 18% 20%,rgba(0,119,255,.12),transparent 32%),linear-gradient(to bottom,#fff,#f5f7fb);color:#111;overflow-x:hidden}
+    body.loaded .page-header,body.loaded .verify-panel,body.loaded .step-card{opacity:1;transform:translateY(0)}
+    .navbar{position:fixed;top:0;width:100%;display:flex;justify-content:space-between;align-items:center;padding:18px 9vw;background:rgba(255,255,255,.82);backdrop-filter:blur(14px);border-bottom:1px solid rgba(0,0,0,.07);z-index:1000}
+    .logo{color:#111;text-decoration:none;font-size:18px;font-weight:900}.back-btn{color:#111;text-decoration:none;font-size:13px;font-weight:800;padding:10px 14px;border:1px solid #e5e9f0;border-radius:8px;background:rgba(255,255,255,.76);transition:.25s}
+    .back-btn:hover{color:#0077ff;border-color:#0077ff;transform:translateY(-2px)}
+    main{width:min(1120px,calc(100% - 40px));margin:0 auto;padding:130px 0 70px}.page-header{max-width:790px;margin-bottom:34px;opacity:0;transform:translateY(28px);transition:.8s}
+    .eyebrow{display:inline-block;margin-bottom:14px;color:#0077ff;font-size:13px;font-weight:900}h1{font-size:clamp(34px,5vw,56px);line-height:1.15;margin-bottom:18px}.lead{color:#444;font-size:16px;line-height:1.9}
+    .layout{display:grid;grid-template-columns:1fr .9fr;gap:24px;align-items:start}.verify-panel{padding:30px;border:1px solid #e5e9f0;border-radius:8px;background:rgba(255,255,255,.78);box-shadow:0 22px 60px rgba(20,30,45,.08);opacity:0;transform:translateY(34px);transition:.8s}
+    .verify-panel:hover{box-shadow:0 28px 70px rgba(20,30,45,.13)}.panel-title{font-size:24px;margin-bottom:10px}.panel-sub{color:#555;font-size:14px;line-height:1.8;margin-bottom:24px}
+    label{display:block;margin-bottom:8px;color:#222;font-size:13px;font-weight:900}input,select{width:100%;padding:14px;margin-bottom:16px;border:1px solid #dfe5ee;border-radius:8px;background:#fff;color:#111;font-size:15px;outline:none;color-scheme:light;transition:.2s}
+    select{appearance:auto;-webkit-appearance:menulist}select option{background:#fff;color:#111}input:focus,select:focus{border-color:#0077ff;box-shadow:0 0 0 4px rgba(0,119,255,.12)}
+    .hint{margin-top:-8px;margin-bottom:18px;color:#6b7280;font-size:12px;line-height:1.7}button{width:100%;padding:15px;border:none;border-radius:8px;background:#111;color:#fff;font-size:15px;font-weight:900;cursor:pointer;transition:.25s}
+    button:hover{background:#222;transform:translateY(-2px);box-shadow:0 14px 34px rgba(0,0,0,.16)}.error-message{display:none;margin-top:14px;padding:14px;border-radius:8px;background:#fff1f2;color:#be123c;font-size:13px;font-weight:800;line-height:1.7}.error-message.show{display:block}
+    .steps{display:grid;gap:16px}.step-card{padding:22px;border:1px solid #e5e9f0;border-radius:8px;background:rgba(255,255,255,.72);opacity:0;transform:translateY(34px);transition:.8s}.step-card:hover{border-color:#0077ff;transform:translateY(-4px)}
+    .step-card strong{display:block;color:#0077ff;font-size:12px;margin-bottom:10px}.step-card h2{font-size:19px;margin-bottom:8px}.step-card p{color:#555;font-size:14px;line-height:1.8}
+    .score-note{margin-top:18px;padding:18px;border-left:4px solid #38a169;border-radius:8px;background:rgba(255,255,255,.76);color:#465160;font-size:14px;line-height:1.8}.footer-note{margin-top:34px;text-align:center;color:#8792a3;font-size:12px}
+    @media(max-width:860px){.navbar{padding:16px 22px}main{width:min(100% - 34px,1120px);padding-top:112px}.layout{grid-template-columns:1fr}}
   </style>
 </head>
-
 <body>
   <nav class="navbar">
     <a class="logo" href="index.html">VERIFLY</a>
@@ -350,193 +33,82 @@
 
   <main>
     <div class="page-header">
-      <span class="eyebrow">ISRC + ACCOUNT VERIFICATION</span>
+      <span class="eyebrow">ISRC + OAUTH VERIFICATION</span>
       <h1>ISRCから本人確認を開始</h1>
       <p class="lead">
-        楽曲のISRCをもとに、SpotifyやMusicBrainzなどのメタデータからアーティスト情報を取得します。
-        次のページでSNS OAuth認証を行い、メタデータ上の公式SNSとログインしたSNSアカウントが一致するかを確認します。
+        まず楽曲のISRCを入力します。VeriflyがISRCから公式SNS候補を取得し、
+        次のページでOAuthログインしたSNSアカウントと一致するかを確認します。
       </p>
     </div>
 
     <div class="layout">
       <section class="verify-panel">
         <h2 class="panel-title">認証に使う情報</h2>
-        <p class="panel-sub">
-          ISRCコードと、照合したいSNSを選択してください。
-          入力内容は次の認証ページに引き継がれます。
-        </p>
+        <p class="panel-sub">ISRCコードと、照合したいSNSを選択してください。</p>
 
         <label for="isrc">ISRCコード</label>
-        <input
-          type="text"
-          id="isrc"
-          placeholder="例: USUM71703861"
-          autocomplete="off"
-          maxlength="15"
-        />
-
-        <div class="hint">
-          ※ ISRCは通常12文字です。ハイフンが入っていても自動で整形します。
-        </div>
+        <input type="text" id="isrc" placeholder="例: USUM71703861" autocomplete="off" maxlength="15" />
+        <div class="hint">※ ISRCは通常12文字です。ハイフンが入っていても自動で整形します。</div>
 
         <label for="sns">照合するSNS</label>
         <select id="sns">
           <option value="">選択してください</option>
           <option value="x">X (Twitter)</option>
-          <option value="instagram">Instagram</option>
-          <option value="youtube">YouTube</option>
         </select>
 
-        <label for="handle">申請するSNS ID</label>
-        <input
-          type="text"
-          id="handle"
-          placeholder="@username"
-          autocomplete="off"
-        />
-
-        <div class="hint">
-          ※ OAuthでログインしたアカウントIDと、このIDが一致するかを次のページで確認します。
-        </div>
-
-        <button type="button" onclick="startVerification()">
-          認証ページへ進む
-        </button>
-
+        <button type="button" onclick="startVerification()">認証ページへ進む</button>
         <div class="error-message" id="errorMessage"></div>
       </section>
 
       <div class="steps">
-        <div class="step-card">
-          <strong>STEP 01</strong>
-          <h2>ISRC入力</h2>
-          <p>
-            楽曲に紐づくISRCを入力し、外部APIからアーティスト名とアーティスト固有IDを取得します。
-          </p>
-        </div>
-
-        <div class="step-card">
-          <strong>STEP 02</strong>
-          <h2>メタデータ取得</h2>
-          <p>
-            Spotify、MusicBrainzなど複数APIを参照し、取得できた情報をキャッシュしながら利用します。
-          </p>
-        </div>
-
-        <div class="step-card">
-          <strong>STEP 03</strong>
-          <h2>OAuth照合</h2>
-          <p>
-            ログインしたSNSアカウントIDと、メタデータ側に登録された公式SNSリンクを照合します。
-          </p>
-        </div>
-
-        <div class="step-card">
-          <strong>STEP 04</strong>
-          <h2>証跡提出へ</h2>
-          <p>
-            本人確認後、活動形態を選択し、提出できる証跡を1項目1点でスコア化します。
-          </p>
-        </div>
-
-        <div class="score-note">
-          次の証跡提出では、提出できる項目を1つ選ぶごとに1点として扱います。
-          合計2点以上でHuman-made認証の提出条件を満たす設計です。
-        </div>
+        <div class="step-card"><strong>STEP 01</strong><h2>ISRC入力</h2><p>楽曲に紐づくISRCを入力します。</p></div>
+        <div class="step-card"><strong>STEP 02</strong><h2>公式SNS候補取得</h2><p>MusicBrainzなどからアーティスト情報と公式リンクを取得します。</p></div>
+        <div class="step-card"><strong>STEP 03</strong><h2>OAuth照合</h2><p>OAuthでログインしたSNS IDが公式SNS候補と一致するか確認します。</p></div>
+        <div class="score-note">本人確認後の証跡提出では、提出できる項目を1つ選ぶごとに1点。合計2点以上でHuman-made認証の提出条件を満たします。</div>
       </div>
     </div>
 
-    <div class="footer-note">
-      © 2026 Verifly
-    </div>
+    <div class="footer-note">© 2026 Verifly</div>
   </main>
 
   <script>
-    window.addEventListener("load", () => {
-      document.body.classList.add("loaded");
-    });
+    window.addEventListener("load", () => document.body.classList.add("loaded"));
 
     function normalizeISRC(value) {
-      return value
-        .trim()
-        .replace(/-/g, "")
-        .replace(/\s/g, "")
-        .toUpperCase();
-    }
-
-    function normalizeHandle(value) {
-      return value.trim();
+      return value.trim().replace(/-/g, "").replace(/\s/g, "").toUpperCase();
     }
 
     function showError(message) {
-      const errorMessage = document.getElementById("errorMessage");
-      errorMessage.textContent = message;
-      errorMessage.classList.add("show");
+      const box = document.getElementById("errorMessage");
+      box.textContent = message;
+      box.classList.add("show");
     }
 
     function clearError() {
-      const errorMessage = document.getElementById("errorMessage");
-      errorMessage.textContent = "";
-      errorMessage.classList.remove("show");
+      const box = document.getElementById("errorMessage");
+      box.textContent = "";
+      box.classList.remove("show");
     }
 
     function startVerification() {
       clearError();
 
-      const isrcInput = document.getElementById("isrc");
-      const snsInput = document.getElementById("sns");
-      const handleInput = document.getElementById("handle");
-
-      const isrc = normalizeISRC(isrcInput.value);
-      const sns = snsInput.value;
-      const handle = normalizeHandle(handleInput.value);
-
+      const isrc = normalizeISRC(document.getElementById("isrc").value);
+      const sns = document.getElementById("sns").value;
       const isrcPattern = /^[A-Z]{2}[A-Z0-9]{3}[0-9]{7}$/;
 
-      if (!isrc) {
-        showError("ISRCコードを入力してください。");
-        return;
-      }
+      if (!isrc) return showError("ISRCコードを入力してください。");
+      if (!isrcPattern.test(isrc)) return showError("ISRCコードの形式を確認してください。例: USUM71703861");
+      if (!sns) return showError("照合するSNSを選択してください。");
 
-      if (!isrcPattern.test(isrc)) {
-        showError("ISRCコードの形式を確認してください。例: USUM71703861");
-        return;
-      }
-
-      if (!sns) {
-        showError("照合するSNSを選択してください。");
-        return;
-      }
-
-      if (!handle.startsWith("@")) {
-        showError("SNS IDは @ から始めてください。");
-        return;
-      }
-
-      if (handle.length < 2) {
-        showError("SNS IDを入力してください。");
-        return;
-      }
-
-      const verificationSession = {
-        isrc: isrc,
-        sns: sns,
-        handle: handle,
+      sessionStorage.setItem("verifly_kuroto_verification", JSON.stringify({
+        isrc,
+        sns,
         startedAt: new Date().toISOString(),
         status: "pending"
-      };
+      }));
 
-      sessionStorage.setItem(
-        "verifly_kuroto_verification",
-        JSON.stringify(verificationSession)
-      );
-
-      const params = new URLSearchParams({
-        isrc: isrc,
-        sns: sns,
-        handle: handle
-      });
-
+      const params = new URLSearchParams({ isrc, sns });
       window.location.href = `kuroto_ninsyo.html?${params.toString()}`;
     }
   </script>
